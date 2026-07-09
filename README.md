@@ -111,18 +111,60 @@ Manifest: https://auth.mercantec.tech/.well-known/mercantec-auth.json
 
 ## Projekter
 
-Tilføj nye projekter i `src/data/projects.ts` — ingen komponent-ændringer nødvendige.
+Tilføj nye platforme i `src/data/projects.ts` — ingen komponent-ændringer nødvendige.
+
+## Elevprojekter (`/students`)
+
+Elever kan indsende projekter med billeder, video, GitHub- og live-links. Data håndteres af en separat API-service med PostgreSQL og MinIO.
+
+**Frontend-ruter:**
+
+| Rute | Formål |
+|------|--------|
+| `/students` | Offentligt galleri (godkendte projekter) |
+| `/students/indsend` | Indsendelsesformular (kræver login) |
+| `/students/mine` | Egne projekter og status |
+| `/students/admin` | Moderation (Teacher/Admin) |
+
+**API** (`students-api/`):
+
+```bash
+cd students-api
+cp .env.example .env
+docker compose up --build -d
+```
+
+- API: http://localhost:4041/health
+- MinIO: http://localhost:9001
+
+Sæt `PUBLIC_STUDENTS_API_URL` i `.env` (frontend) til API'ens URL.
+
+**Produktion (Dokploy):**
+
+1. Deploy `students-api/docker-compose.yml` (API + PostgreSQL + MinIO)
+2. Cloudflare Tunnel:
+   - `students-api.mercantec.tech` → port `4041`
+   - `media.mercantec.tech` → MinIO port `9000`
+3. Sæt `PUBLIC_STUDENTS_API_URL=https://students-api.mercantec.tech` ved web-build
+4. Sæt `STORAGE_PUBLIC_URL=https://media.mercantec.tech/student-projects` i API-miljø
 
 ## Struktur
 
 ```
 src/
-├── components/     # UI-komponenter (inkl. AuthBar)
+├── components/     # UI-komponenter (inkl. AuthBar, StudentProjectCard)
 ├── data/           # Projekter og økosystem-data
-├── lib/auth/       # OAuth 2.0 + PKCE, JWT, fetch-wrapper
+├── lib/
+│   ├── auth/       # OAuth 2.0 + PKCE, JWT, fetch-wrapper
+│   ├── students-api.ts
+│   ├── students-auth.ts
+│   └── student-project-ui.ts
 ├── layouts/        # Side-layout
-├── pages/          # Astro-sider (inkl. /auth/callback)
+├── pages/
+│   ├── auth/callback.astro
+│   └── students/   # Elevprojekt-showcase
 └── styles/         # Global CSS + design tokens
+students-api/       # ASP.NET Core API + PostgreSQL + MinIO
 public/
 ├── brand/          # Mercantec-logo og favicons
 ├── projects/       # Projektlogoer

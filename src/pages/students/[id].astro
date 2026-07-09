@@ -1,0 +1,121 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+---
+
+<Layout title="Projekt — Elevprojekter" description="Elevprojekt på Mercantec.tech">
+  <Navbar />
+  <main class="bg-section min-h-screen pt-24 pb-20">
+    <div class="mx-auto max-w-4xl px-6">
+      <a href="/students" class="reveal mb-8 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+        ← Tilbage til elevprojekter
+      </a>
+
+      <div id="detail-loading" class="reveal text-muted">Henter projekt…</div>
+      <div id="detail-error" class="hidden reveal rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-red-800"></div>
+      <article id="detail-content" class="hidden reveal space-y-8"></article>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { fetchApprovedProject } from "../../lib/students-api";
+  import { renderMediaGallery } from "../../lib/student-project-ui";
+
+  const loadingEl = document.getElementById("detail-loading");
+  const errorEl = document.getElementById("detail-error");
+  const contentEl = document.getElementById("detail-content");
+
+  function escapeHtml(value: string): string {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function renderLinks(github?: string | null, live?: string | null): string {
+    const parts: string[] = [];
+    if (live) {
+      parts.push(
+        `<a href="${escapeHtml(live)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">Se live</a>`,
+      );
+    }
+    if (github) {
+      parts.push(
+        `<a href="${escapeHtml(github)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-text hover:bg-gray-50">GitHub</a>`,
+      );
+    }
+    return parts.length
+      ? `<div class="flex flex-wrap gap-3">${parts.join("")}</div>`
+      : "";
+  }
+
+  async function loadProject() {
+    const segments = window.location.pathname.split("/").filter(Boolean);
+    const id = segments[segments.length - 1];
+    if (!id) {
+      showError("Ugyldigt projekt-id.");
+      return;
+    }
+
+    try {
+      const project = await fetchApprovedProject(id);
+      loadingEl?.classList.add("hidden");
+      contentEl?.classList.remove("hidden");
+
+      const featuresHtml = project.features.length
+        ? `<ul class="space-y-2">${project.features
+            .map(
+              (f) =>
+                `<li class="flex items-start gap-2 text-sm text-text/70"><span class="mt-1 text-primary">✓</span>${escapeHtml(f)}</li>`,
+            )
+            .join("")}</ul>`
+        : "";
+
+      const techHtml = project.techStack.length
+        ? `<div class="flex flex-wrap gap-2">${project.techStack
+            .map(
+              (t) =>
+                `<span class="inline-flex items-center gap-1.5 rounded-full border border-gray-200/80 bg-white px-2.5 py-1 text-xs font-medium text-text/80"><img src="${escapeHtml(t.icon ?? "/tech/dotnet.svg")}" alt="" class="h-3.5 w-3.5" />${escapeHtml(t.name)}</span>`,
+            )
+            .join("")}</div>`
+        : "";
+
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <header class="rounded-2xl border border-gray-200/60 bg-white p-8 shadow-lg" style="border-top: 3px solid #0e38ab">
+            <p class="mb-2 text-sm text-muted">af ${escapeHtml(project.authorName)}</p>
+            <h1 class="mb-2 font-heading text-3xl font-bold text-text">${escapeHtml(project.title)}</h1>
+            <p class="text-lg text-muted">${escapeHtml(project.tagline)}</p>
+          </header>
+          <section class="rounded-2xl border border-gray-200/60 bg-white p-8 shadow-sm">
+            <h2 class="mb-4 font-heading text-xl font-bold text-text">Om projektet</h2>
+            <p class="leading-relaxed text-text/80 whitespace-pre-wrap">${escapeHtml(project.description)}</p>
+          </section>
+          ${featuresHtml ? `<section class="rounded-2xl border border-gray-200/60 bg-white p-8 shadow-sm"><h2 class="mb-4 font-heading text-xl font-bold text-text">Features</h2>${featuresHtml}</section>` : ""}
+          ${techHtml ? `<section class="rounded-2xl border border-gray-200/60 bg-white p-8 shadow-sm"><h2 class="mb-4 font-heading text-xl font-bold text-text">Tech stack</h2>${techHtml}</section>` : ""}
+          <section class="rounded-2xl border border-gray-200/60 bg-white p-8 shadow-sm">
+            <h2 class="mb-4 font-heading text-xl font-bold text-text">Billeder &amp; video</h2>
+            ${renderMediaGallery(project.media)}
+          </section>
+          ${renderLinks(project.githubUrl, project.liveUrl)}
+        `;
+      }
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Projektet blev ikke fundet.",
+      );
+    }
+  }
+
+  function showError(message: string) {
+    loadingEl?.classList.add("hidden");
+    errorEl?.classList.remove("hidden");
+    if (errorEl) errorEl.textContent = message;
+  }
+
+  loadProject();
+</script>

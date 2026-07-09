@@ -1,0 +1,323 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import { TECH_CATALOG } from "../../data/tech";
+---
+
+<Layout
+  title="Indsend projekt — Elevprojekter"
+  description="Indsend dit elevprojekt til Mercantec.tech"
+>
+  <Navbar />
+  <main class="bg-section min-h-screen pt-24 pb-20">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="reveal mb-8">
+        <a href="/students" class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+          ← Tilbage til elevprojekter
+        </a>
+        <h1 class="font-heading text-3xl font-bold text-text">Indsend projekt</h1>
+        <p class="mt-2 text-text/70">
+          Beskriv dit projekt, upload billeder eller video, og tilføj links til GitHub og live-version.
+          Projektet skal godkendes af en lærer før det vises offentligt.
+        </p>
+      </div>
+
+      <div id="auth-required" class="hidden reveal rounded-2xl border border-amber-200 bg-amber-50 px-6 py-8 text-center">
+        <p class="mb-4 text-amber-900">Du skal være logget ind for at indsende et projekt.</p>
+        <button type="button" id="login-btn" class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">
+          Log ind
+        </button>
+      </div>
+
+      <form id="project-form" class="hidden reveal space-y-6">
+        <div class="rounded-2xl border border-gray-200/60 bg-white p-6 shadow-sm space-y-4">
+          <div>
+            <label for="title" class="mb-1 block text-sm font-semibold text-text">Titel *</label>
+            <input id="title" name="title" required maxlength="200" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+          </div>
+          <div>
+            <label for="tagline" class="mb-1 block text-sm font-semibold text-text">Kort tagline</label>
+            <input id="tagline" name="tagline" maxlength="300" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Fx: Quiz-app til GF2" />
+          </div>
+          <div>
+            <label for="description" class="mb-1 block text-sm font-semibold text-text">Beskrivelse *</label>
+            <textarea id="description" name="description" required rows="5" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Fortæl om projektet, hvad det gør, og hvad du har lært…"></textarea>
+          </div>
+          <div>
+            <label for="features" class="mb-1 block text-sm font-semibold text-text">Features (én per linje)</label>
+            <textarea id="features" name="features" rows="4" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Login med Mercantec Auth&#10;Responsivt design"></textarea>
+          </div>
+          <div>
+            <label for="github" class="mb-1 block text-sm font-semibold text-text">GitHub URL</label>
+            <input id="github" name="github" type="url" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://github.com/…" />
+          </div>
+          <div>
+            <label for="live" class="mb-1 block text-sm font-semibold text-text">Live demo URL</label>
+            <input id="live" name="live" type="url" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://…" />
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200/60 bg-white p-6 shadow-sm">
+          <h2 class="mb-4 font-heading text-lg font-bold text-text">Tech stack</h2>
+          <div class="flex flex-wrap gap-2" id="tech-options">
+            {TECH_CATALOG.map((tech) => (
+              <label class="tech-option inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input type="checkbox" name="tech" value={tech.name} data-icon={tech.icon} class="sr-only" />
+                <img src={tech.icon} alt="" class="h-4 w-4" />
+                {tech.name}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200/60 bg-white p-6 shadow-sm space-y-4">
+          <h2 class="font-heading text-lg font-bold text-text">Billeder &amp; video</h2>
+          <p class="text-sm text-muted">Billeder: jpeg, png, webp (max 5 MB). Video: mp4/webm (max 50 MB) eller YouTube/Vimeo-link.</p>
+          <div>
+            <label for="media-files" class="mb-1 block text-sm font-semibold text-text">Upload filer</label>
+            <input id="media-files" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple class="block w-full text-sm text-text" />
+            <div id="upload-progress" class="mt-2 hidden text-sm text-muted"></div>
+          </div>
+          <div class="flex gap-2">
+            <input id="video-embed" type="url" placeholder="YouTube eller Vimeo URL" class="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <button type="button" id="add-embed-btn" class="shrink-0 rounded-full border border-gray-200 px-4 py-2.5 text-sm font-semibold hover:bg-gray-50">Tilføj video</button>
+          </div>
+          <ul id="media-list" class="space-y-2 text-sm text-text/80"></ul>
+        </div>
+
+        <div id="form-error" class="hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"></div>
+        <div id="form-success" class="hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"></div>
+
+        <div class="flex flex-wrap gap-3">
+          <button type="button" id="save-draft-btn" class="rounded-full border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-text hover:bg-gray-50">
+            Gem kladde
+          </button>
+          <button type="submit" class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">
+            Indsend til godkendelse
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import {
+    addVideoEmbed,
+    createProject,
+    deleteProjectMedia,
+    submitProject,
+    updateProject,
+    uploadProjectMedia,
+    type MediaItem,
+    type StudentProject,
+  } from "../../lib/students-api";
+  import { isLoggedIn, requireLogin } from "../../lib/students-auth";
+
+  const authRequired = document.getElementById("auth-required");
+  const form = document.getElementById("project-form") as HTMLFormElement;
+  const loginBtn = document.getElementById("login-btn");
+  const mediaList = document.getElementById("media-list");
+  const mediaFiles = document.getElementById("media-files") as HTMLInputElement;
+  const uploadProgress = document.getElementById("upload-progress");
+  const formError = document.getElementById("form-error");
+  const formSuccess = document.getElementById("form-success");
+
+  let projectId: string | null = new URLSearchParams(window.location.search).get("id");
+  let currentMedia: MediaItem[] = [];
+
+  function showError(message: string) {
+    formError?.classList.remove("hidden");
+    formSuccess?.classList.add("hidden");
+    if (formError) formError.textContent = message;
+  }
+
+  function showSuccess(message: string) {
+    formSuccess?.classList.remove("hidden");
+    formError?.classList.add("hidden");
+    if (formSuccess) formSuccess.textContent = message;
+  }
+
+  function getSelectedTech() {
+    return Array.from(form.querySelectorAll<HTMLInputElement>('input[name="tech"]:checked')).map(
+      (input) => ({ name: input.value, icon: input.dataset.icon }),
+    );
+  }
+
+  function getFormData() {
+    const featuresRaw = (document.getElementById("features") as HTMLTextAreaElement).value;
+    return {
+      title: (document.getElementById("title") as HTMLInputElement).value.trim(),
+      tagline: (document.getElementById("tagline") as HTMLInputElement).value.trim(),
+      description: (document.getElementById("description") as HTMLTextAreaElement).value.trim(),
+      features: featuresRaw
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+      techStack: getSelectedTech(),
+      githubUrl: (document.getElementById("github") as HTMLInputElement).value.trim() || undefined,
+      liveUrl: (document.getElementById("live") as HTMLInputElement).value.trim() || undefined,
+    };
+  }
+
+  function renderMediaList() {
+    if (!mediaList) return;
+    if (!currentMedia.length) {
+      mediaList.innerHTML = '<li class="text-muted">Ingen media tilføjet endnu.</li>';
+      return;
+    }
+
+    mediaList.innerHTML = currentMedia
+      .map(
+        (m) =>
+          `<li class="flex items-center justify-between gap-3 rounded-xl border border-gray-100 px-3 py-2"><span class="truncate">${m.type}: ${m.url}</span><button type="button" data-media-id="${m.id}" class="remove-media shrink-0 text-sm text-red-600 hover:underline">Fjern</button></li>`,
+      )
+      .join("");
+
+    mediaList.querySelectorAll(".remove-media").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!projectId) return;
+        const mediaId = (btn as HTMLButtonElement).dataset.mediaId;
+        if (!mediaId) return;
+        try {
+          await deleteProjectMedia(projectId, mediaId);
+          currentMedia = currentMedia.filter((m) => m.id !== mediaId);
+          renderMediaList();
+        } catch (err) {
+          showError(err instanceof Error ? err.message : "Kunne ikke fjerne media.");
+        }
+      });
+    });
+  }
+
+  function fillForm(project: StudentProject) {
+    (document.getElementById("title") as HTMLInputElement).value = project.title;
+    (document.getElementById("tagline") as HTMLInputElement).value = project.tagline;
+    (document.getElementById("description") as HTMLTextAreaElement).value = project.description;
+    (document.getElementById("features") as HTMLTextAreaElement).value = project.features.join("\n");
+    (document.getElementById("github") as HTMLInputElement).value = project.githubUrl ?? "";
+    (document.getElementById("live") as HTMLInputElement).value = project.liveUrl ?? "";
+    project.techStack.forEach((t) => {
+      const input = form.querySelector<HTMLInputElement>(`input[name="tech"][value="${CSS.escape(t.name)}"]`);
+      if (input) input.checked = true;
+    });
+    currentMedia = project.media;
+    renderMediaList();
+  }
+
+  async function ensureProject(): Promise<string> {
+    const data = getFormData();
+    if (!data.title) throw new Error("Titel er påkrævet.");
+
+    if (projectId) {
+      await updateProject(projectId, data);
+      return projectId;
+    }
+
+    const created = await createProject(data);
+    projectId = created.id;
+    const url = new URL(window.location.href);
+    url.searchParams.set("id", created.id);
+    window.history.replaceState({}, "", url);
+    return created.id;
+  }
+
+  async function init() {
+    if (!isLoggedIn()) {
+      authRequired?.classList.remove("hidden");
+      return;
+    }
+
+    form.classList.remove("hidden");
+
+    if (projectId) {
+      try {
+        const { fetchMyProjects } = await import("../../lib/students-api");
+        const mine = await fetchMyProjects();
+        const existing = mine.find((p) => p.id === projectId);
+        if (existing) fillForm(existing);
+      } catch {
+        // ignore — new project flow
+      }
+    }
+  }
+
+  loginBtn?.addEventListener("click", () => {
+    requireLogin("/students/indsend");
+  });
+
+  document.getElementById("save-draft-btn")?.addEventListener("click", async () => {
+    try {
+      await ensureProject();
+      showSuccess("Kladde gemt. Du kan fortsætte senere under Mine projekter.");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Kunne ikke gemme kladde.");
+    }
+  });
+
+  mediaFiles?.addEventListener("change", async () => {
+    const files = mediaFiles.files;
+    if (!files?.length) return;
+
+    try {
+      const id = await ensureProject();
+      for (const file of Array.from(files)) {
+        uploadProgress?.classList.remove("hidden");
+        if (uploadProgress) uploadProgress.textContent = `Uploader ${file.name}…`;
+        const media = await uploadProjectMedia(id, file, (pct) => {
+          if (uploadProgress) uploadProgress.textContent = `Uploader ${file.name}… ${pct}%`;
+        });
+        currentMedia.push(media);
+      }
+      renderMediaList();
+      uploadProgress?.classList.add("hidden");
+      mediaFiles.value = "";
+      showSuccess("Filer uploadet.");
+    } catch (err) {
+      uploadProgress?.classList.add("hidden");
+      showError(err instanceof Error ? err.message : "Upload fejlede.");
+    }
+  });
+
+  document.getElementById("add-embed-btn")?.addEventListener("click", async () => {
+    const url = (document.getElementById("video-embed") as HTMLInputElement).value.trim();
+    if (!url) return;
+
+    try {
+      const id = await ensureProject();
+      const media = await addVideoEmbed(id, url);
+      currentMedia.push(media);
+      renderMediaList();
+      (document.getElementById("video-embed") as HTMLInputElement).value = "";
+      showSuccess("Video-link tilføjet.");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Kunne ikke tilføje video.");
+    }
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const id = await ensureProject();
+      await submitProject(id);
+      showSuccess("Projekt indsendt! Det afventer nu godkendelse.");
+      setTimeout(() => {
+        window.location.href = "/students/mine";
+      }, 1500);
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Indsendelse fejlede.");
+    }
+  });
+
+  window.addEventListener("mercantec-auth-changed", init);
+  init();
+</script>
+
+<style>
+  .tech-option:has(:checked) {
+    border-color: var(--color-primary);
+    background: rgba(14, 56, 171, 0.05);
+  }
+</style>

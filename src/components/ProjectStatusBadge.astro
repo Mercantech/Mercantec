@@ -1,0 +1,25 @@
+---
+interface Props {
+  status: "draft" | "pending" | "approved" | "rejected";
+}
+
+const { status } = Astro.props;
+
+const labels = {
+  draft: "Kladde",
+  pending: "Afventer",
+  approved: "Godkendt",
+  rejected: "Afvist",
+};
+
+const colors = {
+  draft: "bg-gray-100 text-gray-600",
+  pending: "bg-amber-100 text-amber-700",
+  approved: "bg-emerald-100 text-emerald-700",
+  rejected: "bg-red-100 text-red-700",
+};
+---
+
+<span class:list={["rounded-full px-3 py-1 text-xs font-semibold", colors[status]]}>
+  {labels[status]}
+</span>

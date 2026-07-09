@@ -67,7 +67,9 @@ import Footer from "../../components/Footer.astro";
     try {
       await exchangeCode(code, state);
       window.dispatchEvent(new Event("mercantec-auth-changed"));
-      window.location.replace("/");
+      const returnPath = sessionStorage.getItem("mercantec_auth_return") || "/";
+      sessionStorage.removeItem("mercantec_auth_return");
+      window.location.replace(returnPath);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       let hint: string | undefined;

@@ -1,0 +1,45 @@
+---
+interface Props {
+  media: { type: string; url: string }[];
+}
+
+const { media } = Astro.props;
+
+const images = media.filter((m) => m.type === "image");
+const videos = media.filter((m) => m.type === "video" || m.type === "video_embed");
+---
+
+{media.length === 0 ? (
+  <p class="text-muted">Ingen billeder eller video.</p>
+) : (
+  <div class="space-y-6">
+    {images.length > 0 && (
+      <div class="grid gap-4 sm:grid-cols-2">
+        {images.map((img) => (
+          <figure class="overflow-hidden rounded-2xl border border-gray-200/60 bg-white shadow-sm">
+            <img src={img.url} alt="" class="h-56 w-full object-cover" loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    )}
+    {videos.length > 0 && (
+      <div class="grid gap-4">
+        {videos.map((video) =>
+          video.type === "video_embed" ? (
+            <div class="aspect-video overflow-hidden rounded-2xl border border-gray-200/60 bg-black shadow-sm">
+              <iframe
+                src={video.url}
+                title="Projektvideo"
+                class="h-full w-full"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <video controls class="w-full rounded-2xl border border-gray-200/60 bg-black shadow-sm" src={video.url} />
+          ),
+        )}
+      </div>
+    )}
+  </div>
+)}

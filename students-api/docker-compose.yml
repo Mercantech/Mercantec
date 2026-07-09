@@ -1,0 +1,79 @@
+# Students API — Docker Compose
+# Brug: docker compose up -d --build
+
+name: mercantec-students-api
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mercantec-students-api
+    ports:
+      - "${API_PORT:-4041}:4041"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=students;Username=${POSTGRES_USER:-students};Password=${POSTGRES_PASSWORD:-students}
+      Auth__Authority: ${AUTH_AUTHORITY:-https://auth.mercantec.tech}
+      Auth__Audience: ${AUTH_AUDIENCE:-mercantec-apps}
+      Storage__Endpoint: http://minio:9000
+      Storage__AccessKey: ${MINIO_ROOT_USER:-minioadmin}
+      Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      Storage__Bucket: student-projects
+      Storage__PublicUrl: ${STORAGE_PUBLIC_URL:-http://localhost:9000/student-projects}
+      Storage__UseSsl: "false"
+      Cors__Origins__0: https://mercantec.tech
+      Cors__Origins__1: http://localhost:4321
+      Cors__Origins__2: http://localhost:4040
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:4041/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: mercantec-students-postgres
+    environment:
+      POSTGRES_DB: students
+      POSTGRES_USER: ${POSTGRES_USER:-students}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-students}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-students} -d students"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: mercantec-students-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  default:
+    name: mercantec_students_net

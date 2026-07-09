@@ -1,0 +1,52 @@
+---
+/** Statisk elevprojekt-kort — bruges primært via client-side rendering i student-project-ui.ts */
+interface Props {
+  title: string;
+  tagline?: string;
+  authorName: string;
+  description: string;
+  href?: string;
+}
+
+const {
+  title,
+  tagline = "Elevprojekt",
+  authorName,
+  description,
+  href = "#",
+} = Astro.props;
+
+const accent = "#0e38ab";
+const accentBg = "rgba(14, 56, 171, 0.08)";
+---
+
+<article
+  class="student-project-card flex h-full flex-col rounded-2xl border border-gray-200/60 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+  style={`border-top: 3px solid ${accent}`}
+>
+  <div class="mb-6 flex items-start justify-between gap-4">
+    <div class="flex min-w-0 items-center gap-4">
+      <div
+        class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl font-heading text-xl font-bold text-primary"
+        style={`background: ${accentBg}`}
+      >
+        {title.charAt(0).toUpperCase()}
+      </div>
+      <div class="min-w-0">
+        <h3 class="font-heading text-xl font-bold text-text">{title}</h3>
+        <p class="text-sm text-muted">{tagline}</p>
+        <p class="mt-1 text-xs text-muted">af {authorName}</p>
+      </div>
+    </div>
+    <span class="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+      Elevprojekt
+    </span>
+  </div>
+  <p class="mb-6 flex-1 leading-relaxed text-text/80 line-clamp-4">{description}</p>
+  <a
+    href={href}
+    class="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+  >
+    Se projekt
+  </a>
+</article>

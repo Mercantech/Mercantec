@@ -20,6 +20,7 @@ services:
         PUBLIC_AUTH_ISSUER: ${PUBLIC_AUTH_ISSUER:-https://auth.mercantec.tech}
         PUBLIC_AUTH_AUDIENCE: ${PUBLIC_AUTH_AUDIENCE:-mercantec-apps}
         PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://mercantec.tech}
+        PUBLIC_STUDENTS_API_URL: ${PUBLIC_STUDENTS_API_URL:-https://students-api.mercantec.tech}
     container_name: mercantec-web
     ports:
       - "${WEB_PORT:-4040}:4040"

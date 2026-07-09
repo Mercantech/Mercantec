@@ -9,27 +9,27 @@ interface Props {
 const { items, accentColor } = Astro.props;
 ---
 
-<div class="flex flex-wrap gap-3">
+<div class="flex flex-wrap gap-2">
   {
     items.map((item) => (
-      <div class="group/tech relative" title={item.name}>
-        <div
-          class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200/80 bg-white transition-all group-hover/tech:-translate-y-0.5 group-hover/tech:shadow-md"
-          style={`--accent: ${accentColor}`}
-        >
-          <img
-            src={item.icon}
-            alt={item.name}
-            class="h-5 w-5 object-contain opacity-70 transition-opacity group-hover/tech:opacity-100"
-            loading="lazy"
-          />
-        </div>
-        <span
-          class="pointer-events-none absolute -top-12 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-text px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover/tech:opacity-100"
-        >
-          {item.name}
-        </span>
-      </div>
+      <span
+        class="tech-chip inline-flex items-center gap-1.5 rounded-lg border border-gray-200/80 bg-white px-2.5 py-1.5 text-xs font-medium text-text/80 shadow-sm transition-colors hover:border-gray-300 hover:shadow"
+        style={`--tech-accent: ${accentColor}`}
+      >
+        <img
+          src={item.icon}
+          alt=""
+          class="tech-chip__icon h-4 w-4 shrink-0 object-contain"
+          loading="lazy"
+        />
+        {item.name}
+      </span>
     ))
   }
 </div>
+
+<style>
+  .tech-chip:hover {
+    color: var(--tech-accent);
+  }
+</style>

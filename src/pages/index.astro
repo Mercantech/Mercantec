@@ -6,10 +6,9 @@ import ProjectCard from "../components/ProjectCard.astro";
 import EcosystemDiagram from "../components/EcosystemDiagram.astro";
 import Footer from "../components/Footer.astro";
 import { projects } from "../data/projects";
+import { getTechIcon, sortTechNames } from "../data/tech";
 
-const techFilters = Array.from(
-  new Set(projects.flatMap((p) => p.techStack.map((t) => t.name))),
-).sort((a, b) => a.localeCompare(b, "da"));
+const techFilters = sortTechNames(projects.flatMap((p) => p.techStack.map((t) => t.name)));
 ---
 
 <Layout>
@@ -45,6 +44,7 @@ const techFilters = Array.from(
               data-tech={t.toLowerCase()}
               aria-pressed="false"
             >
+              <img src={getTechIcon(t)} alt="" class="tech-filter-chip__icon" loading="lazy" />
               {t}
             </button>
           ))}
@@ -68,6 +68,9 @@ const techFilters = Array.from(
 
 <style is:global>
   .tech-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     border: 1px solid rgba(209, 213, 219, 0.9); /* gray-300 */
     background: rgba(255, 255, 255, 0.9);
     color: var(--color-text);
@@ -81,6 +84,15 @@ const techFilters = Array.from(
       border-color 160ms ease,
       color 160ms ease,
       box-shadow 160ms ease;
+  }
+  .tech-filter-chip__icon {
+    width: 1rem;
+    height: 1rem;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .tech-filter-chip--active .tech-filter-chip__icon {
+    filter: brightness(0) invert(1);
   }
   .tech-filter-chip:hover {
     transform: translateY(-1px);

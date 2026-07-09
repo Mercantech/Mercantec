@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
+const isExternalUrl = /^https?:\/\//i.test(project.url);
 
 const statusLabels = {
   live: "Live",
@@ -85,8 +86,8 @@ const statusColors = {
   <div class="flex flex-wrap items-center gap-3">
     <a
       href={project.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={isExternalUrl ? "_blank" : undefined}
+      rel={isExternalUrl ? "noopener noreferrer" : undefined}
       class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
     >
       Åbn platform

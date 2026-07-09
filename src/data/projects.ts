@@ -75,6 +75,33 @@ export const projects: Project[] = [
     accentBg: "rgba(134, 59, 255, 0.08)",
     status: "live",
   },
+  {
+    id: "vba-year-report-web",
+    name: "VBA — Årsrapport (web)",
+    tagline: "Årsrapport fra Outlook via Microsoft Graph",
+    description:
+      "Webdelen af VBA-projektet: henter Outlook-kalender via Microsoft Graph og genererer projekt-årsrapport med samme logik som VBA-makroen. Login sker via Azure (Microsoft Entra ID), og data hentes via Graph (kalender og evt. mail).",
+    features: [
+      "Azure/Entra login (MSAL) med delegated scopes",
+      "Microsoft Graph: kalender-hentning (inkl. delte kalendere)",
+      "Excel-download af rapport (xlsx) og dashboard-visning",
+      "Kører med Postgres + session/caching",
+    ],
+    techStack: [
+      { name: "Node.js", icon: "/tech/nodejs.svg" },
+      { name: "Express", icon: "/tech/express.svg" },
+      { name: "PostgreSQL", icon: "/tech/postgresql.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: "Azure", icon: "/tech/azure.svg" },
+      { name: "Microsoft Graph", icon: "/tech/microsoftgraph.svg" },
+    ],
+    url: "/projekter/vba-year-report-web",
+    github: "https://github.com/Mercantech/VBA/tree/main/year-report-web",
+    logo: "/projects/vba-year-report-logo.svg",
+    accentColor: "#188a9c",
+    accentBg: "rgba(24, 138, 156, 0.10)",
+    status: "beta",
+  },
 ];
 
 export interface EcosystemNode {

@@ -6,7 +6,7 @@ Landing page for [mercantec.tech](https://mercantec.tech) — central hub for Me
 
 - [Astro](https://astro.build) + [Tailwind CSS v4](https://tailwindcss.com)
 - TypeScript (strict)
-- Docker + nginx (produktion via Dokploy/Traefik)
+- Docker + nginx (produktion via Dokploy + Cloudflare-tunnel)
 
 ## Lokal udvikling
 
@@ -24,33 +24,33 @@ npm run build
 npm run preview
 ```
 
-## Docker (lokal)
+## Docker
 
 ```bash
 cp .env.example .env
-docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+docker compose up --build -d
 ```
 
-Åbn [http://localhost:5173](http://localhost:5173).
+Åbn [http://localhost:4040](http://localhost:4040).
 
 ## Dokploy (produktion)
 
-Routing følger samme mønster som UptimeDaddy:
+Routing via **direkte Cloudflare-tunnel** (apex-domænet `mercantec.tech` — ikke Traefik subdomæne-labels):
 
-1. Cloudflare: `mercantec.tech` (CNAME → tunnel)
-2. Tunnel ingress: `*.mercantec.tech` → `http://localhost:80`
-3. Traefik (Dokploy): `Host(mercantec.tech)` → container port 5173
+1. Container eksponerer port **4040** på host
+2. Cloudflare tunnel ingress: `mercantec.tech` → `http://localhost:4040`
 
 | Felt | Værdi |
 |------|--------|
 | Compose-fil | `docker-compose.yml` |
 | Arbejdsmappe | repo-roden |
 | Deploy-kommando | `docker compose up -d --build` |
+| Host-port | `4040` |
 
 Miljøvariabler (`.env`):
 
 ```env
-FRONTEND_DOMAIN=mercantec.tech
+FRONTEND_PUBLISH_PORT=4040
 PUBLIC_AUTH_CLIENT_ID=demo
 ```
 
@@ -70,7 +70,7 @@ Siden integrerer med [Mercantec Auth](https://auth.mercantec.tech) via OAuth 2.0
 | `client_id` | `demo` (dev) eller jeres produktions-klient |
 | Redirect URI | `https://mercantec.tech/auth/callback` |
 | Redirect URI (dev) | `http://localhost:4321/auth/callback` |
-| Redirect URI (docker) | `http://localhost:5173/auth/callback` |
+| Redirect URI (docker) | `http://localhost:4040/auth/callback` |
 | CORS (`Cors:SpaOrigins`) | `https://mercantec.tech` (+ dev-origins) |
 
 Kontakt: mags@mercantec.dk
@@ -102,5 +102,5 @@ public/
 └── tech/           # Tech stack-ikoner
 docker/
 ├── Dockerfile      # node build → nginx runtime
-└── nginx.conf      # Statisk serving
+└── nginx.conf      # Statisk serving på port 4040
 ```

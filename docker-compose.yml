@@ -1,12 +1,9 @@
 # Dokploy-deploy: docker compose up -d --build
 #
-# Routing (Mercantec — samme mønster som UptimeDaddy):
-#   1. Cloudflare: mercantec.tech (CNAME → tunnel)
-#   2. Tunnel ingress: *.mercantec.tech → http://localhost:80
-#   3. Traefik (Dokploy): Host(`mercantec.tech`) → container-port
+# Routing via direkte Cloudflare-tunnel (apex-domæne mercantec.tech):
+#   Tunnel ingress: mercantec.tech → http://localhost:4040
 #
-# Lokal udvikling med host-port:
-#   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+# Ingen Traefik-labels — apex-domænet routes ikke via Dokploy Traefik Host()-rules.
 
 services:
   web:
@@ -19,22 +16,11 @@ services:
         PUBLIC_AUTH_ISSUER: ${PUBLIC_AUTH_ISSUER:-https://auth.mercantec.tech}
         PUBLIC_AUTH_AUDIENCE: ${PUBLIC_AUTH_AUDIENCE:-mercantec-apps}
     restart: unless-stopped
-    networks:
-      - dokploy-network
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=dokploy-network
-      - traefik.http.routers.mercantec-web.rule=Host(`${FRONTEND_DOMAIN:-mercantec.tech}`)
-      - traefik.http.routers.mercantec-web.entrypoints=web
-      - traefik.http.routers.mercantec-web.service=mercantec-web
-      - traefik.http.services.mercantec-web.loadbalancer.server.port=5173
+    ports:
+      - "${FRONTEND_PUBLISH_PORT:-4040}:4040"
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:5173/"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4040/"]
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s
-
-networks:
-  dokploy-network:
-    external: true

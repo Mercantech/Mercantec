@@ -1,9 +1,0 @@
-# Lokal udvikling: eksponér port på host (uden Traefik).
-#   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
-#
-# Domæner i Traefik-labels ignoreres lokalt; brug localhost + port nedenfor.
-
-services:
-  web:
-    ports:
-      - "${FRONTEND_PUBLISH_PORT:-5173}:5173"

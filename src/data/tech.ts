@@ -1,7 +1,7 @@
 /** Kanonisk tech-liste med ikoner — bruges til filtre og som reference for projekter. */
 export const TECH_CATALOG: { name: string; icon: string }[] = [
   { name: ".NET", icon: "/tech/dotnet.svg" },
-  { name: "Azure", icon: "/tech/azure.svg" },
+  { name: "Azure", icon: "/tech/azure.png" },
   { name: "Blazor", icon: "/tech/blazor.svg" },
   { name: "Docker", icon: "/tech/docker.svg" },
   { name: "Express", icon: "/tech/express.svg" },
@@ -9,7 +9,7 @@ export const TECH_CATALOG: { name: string; icon: string }[] = [
   { name: "Go", icon: "/tech/go.svg" },
   { name: "JWT", icon: "/tech/jsonwebtokens.svg" },
   { name: "Markdown", icon: "/tech/markdown.svg" },
-  { name: "Microsoft Graph", icon: "/tech/microsoftgraph.svg" },
+  { name: "Microsoft Graph", icon: "/tech/microsoftgraph.png" },
   { name: "MQTT", icon: "/tech/mqtt.svg" },
   { name: "Next.js", icon: "/tech/nextjs.svg" },
   { name: "Node.js", icon: "/tech/nodejs.svg" },

@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
+import { publicPath } from "../../lib/site-url";
 ---
 
 <Layout title="Mine projekter — Elevprojekter" description="Dine indsendte elevprojekter">
@@ -10,13 +11,13 @@ import Footer from "../../components/Footer.astro";
     <div class="mx-auto max-w-6xl px-6">
       <div class="reveal mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <a href="/students" class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+          <a href={publicPath("/students")} class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
             ← Tilbage til elevprojekter
           </a>
           <h1 class="font-heading text-3xl font-bold text-text">Mine projekter</h1>
           <p class="mt-2 text-text/70">Se status på dine indsendelser og rediger kladder.</p>
         </div>
-        <a href="/students/indsend" class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">
+        <a href={publicPath("/students/indsend")} class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">
           Nyt projekt
         </a>
       </div>
@@ -30,7 +31,7 @@ import Footer from "../../components/Footer.astro";
       <div id="mine-error" class="hidden reveal rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-red-800"></div>
       <div id="mine-empty" class="hidden reveal rounded-2xl border border-gray-200/60 bg-white px-8 py-12 text-center shadow-sm">
         <p class="mb-4 text-text/80">Du har ingen projekter endnu.</p>
-        <a href="/students/indsend" class="font-semibold text-primary hover:underline">Opret dit første projekt</a>
+        <a href={publicPath("/students/indsend")} class="font-semibold text-primary hover:underline">Opret dit første projekt</a>
       </div>
       <div id="mine-grid" class="grid items-stretch gap-8 lg:grid-cols-2"></div>
     </div>
@@ -42,6 +43,7 @@ import Footer from "../../components/Footer.astro";
   import { fetchMyProjects } from "../../lib/students-api";
   import { isLoggedIn, requireLogin } from "../../lib/students-auth";
   import { renderStudentProjectCard } from "../../lib/student-project-ui";
+  import { getSiteOrigin } from "../../lib/auth";
 
   const authEl = document.getElementById("mine-auth");
   const loadingEl = document.getElementById("mine-loading");
@@ -85,7 +87,7 @@ import Footer from "../../components/Footer.astro";
             showStatus: true,
             linkToDetail: project.status === "approved",
           });
-          const editUrl = `/students/indsend?id=${project.id}`;
+          const editUrl = `${getSiteOrigin()}/students/indsend?id=${project.id}`;
           const rejection =
             project.status === "rejected" && project.rejectionReason
               ? `<p class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">Afvisningsårsag: ${escapeHtml(project.rejectionReason)}</p>`

@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import { TECH_CATALOG } from "../../data/tech";
+import { publicPath } from "../../lib/site-url";
 ---
 
 <Layout
@@ -13,7 +14,7 @@ import { TECH_CATALOG } from "../../data/tech";
   <main class="bg-section min-h-screen pt-24 pb-20">
     <div class="mx-auto max-w-3xl px-6">
       <div class="reveal mb-8">
-        <a href="/students" class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+        <a href={publicPath("/students")} class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
           ← Tilbage til elevprojekter
         </a>
         <h1 class="font-heading text-3xl font-bold text-text">Indsend projekt</h1>

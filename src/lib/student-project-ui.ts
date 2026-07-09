@@ -1,4 +1,5 @@
 import type { ProjectStatus } from "./students-api";
+import { getSiteOrigin } from "./auth/config";
 
 const ACCENT = "#0e38ab";
 const ACCENT_BG = "rgba(14, 56, 171, 0.08)";
@@ -67,7 +68,7 @@ export function renderStudentProjectCard(
 ): string {
   const { showStatus = false, linkToDetail = true } = options;
   const thumb = project.media ? firstImageUrl(project.media) : null;
-  const href = linkToDetail ? `/students/projekt?id=${project.id}` : "#";
+  const href = linkToDetail ? `${getSiteOrigin()}/students/projekt?id=${project.id}` : "#";
 
   const thumbHtml = thumb
     ? `<img src="${escapeHtml(thumb)}" alt="" class="h-full w-full object-cover" loading="lazy" />`

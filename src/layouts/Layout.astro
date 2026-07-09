@@ -25,13 +25,40 @@ const {
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        var loc = window.location;
+        var host = loc.hostname;
+        var isMercantec =
+          host === "mercantec.tech" || host.length > 14 && host.slice(-14) === ".mercantec.tech";
+        if (isMercantec && loc.port === "4040") {
+          loc.replace("https://" + host + loc.pathname + loc.search + loc.hash);
+        }
+      })();
+    </script>
   </head>
   <body>
     <slot />
     <script>
-      import { redirectIfInternalPort } from "../lib/auth";
+      import { getSiteOrigin, redirectIfInternalPort } from "../lib/auth";
 
       redirectIfInternalPort();
+
+      function fixInternalLinks() {
+        const origin = getSiteOrigin();
+        if (origin === window.location.origin) return;
+
+        document.querySelectorAll('a[href^="/"]').forEach((el) => {
+          const href = el.getAttribute("href");
+          if (href) el.setAttribute("href", `${origin}${href}`);
+        });
+      }
+
+      fixInternalLinks();
+      new MutationObserver(fixInternalLinks).observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
 
       const observer = new IntersectionObserver(
         (entries) => {

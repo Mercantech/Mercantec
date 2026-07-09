@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
+import { publicPath } from "../../lib/site-url";
 ---
 
 <Layout
@@ -22,13 +23,13 @@ import Footer from "../../components/Footer.astro";
         </div>
         <div class="flex flex-wrap gap-3">
           <a
-            href="/students/mine"
+            href={publicPath("/students/mine")}
             class="rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-gray-50"
           >
             Mine projekter
           </a>
           <a
-            href="/students/indsend"
+            href={publicPath("/students/indsend")}
             class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
           >
             Indsend projekt
@@ -40,7 +41,7 @@ import Footer from "../../components/Footer.astro";
       <div id="students-error" class="hidden reveal rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-red-800"></div>
       <div id="students-empty" class="hidden reveal rounded-2xl border border-gray-200/60 bg-white px-8 py-12 text-center shadow-sm">
         <p class="mb-4 text-text/80">Ingen godkendte elevprojekter endnu.</p>
-        <a href="/students/indsend" class="font-semibold text-primary hover:underline">Vær den første til at indsende et projekt</a>
+        <a href={publicPath("/students/indsend")} class="font-semibold text-primary hover:underline">Vær den første til at indsende et projekt</a>
       </div>
       <div id="students-grid" class="grid items-stretch gap-8 lg:grid-cols-2"></div>
       <div id="students-pagination" class="mt-10 flex justify-center gap-2"></div>

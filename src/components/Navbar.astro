@@ -1,5 +1,6 @@
 ---
 import AuthBar from "./AuthBar.astro";
+import { publicPath } from "../lib/site-url";
 
 const { pathname } = Astro.url;
 const isHome = pathname === "/";
@@ -14,14 +15,14 @@ const isHome = pathname === "/";
   data-on-hero={isHome ? "true" : "false"}
 >
   <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-    <a href="/" class="flex items-center gap-3" aria-label="Mercantec forside">
+    <a href={publicPath("/")} class="flex items-center gap-3" aria-label="Mercantec forside">
       <img src="/brand/logo.svg" alt="Mercantec" class:list={["h-8 w-auto logo-light", { hidden: !isHome }]} />
       <img src="/brand/logo-dark.svg" alt="Mercantec" class:list={["h-8 w-auto logo-dark", { hidden: isHome }]} />
     </a>
 
     <div class="flex items-center gap-4 sm:gap-6">
       <a
-        href={isHome ? "#projekter" : "/#projekter"}
+        href={isHome ? "#projekter" : publicPath("/#projekter")}
         class:list={[
           "nav-link hidden text-sm font-medium transition-colors sm:inline",
           isHome ? "text-white/90 hover:text-white" : "text-text hover:text-primary",
@@ -30,7 +31,7 @@ const isHome = pathname === "/";
         Projekter
       </a>
       <a
-        href="/students"
+        href={publicPath("/students")}
         class:list={[
           "nav-link hidden text-sm font-medium transition-colors sm:inline",
           isHome ? "text-white/90 hover:text-white" : "text-text hover:text-primary",
@@ -39,7 +40,7 @@ const isHome = pathname === "/";
         Elever
       </a>
       <a
-        href={isHome ? "#oekosystem" : "/#oekosystem"}
+        href={isHome ? "#oekosystem" : publicPath("/#oekosystem")}
         class:list={[
           "nav-link hidden text-sm font-medium transition-colors sm:inline",
           isHome ? "text-white/90 hover:text-white" : "text-text hover:text-primary",

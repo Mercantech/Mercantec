@@ -2,13 +2,14 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
+import { publicPath } from "../../lib/site-url";
 ---
 
 <Layout title="Projekt — Elevprojekter" description="Elevprojekt på Mercantec.tech">
   <Navbar />
   <main class="bg-section min-h-screen pt-24 pb-20">
     <div class="mx-auto max-w-4xl px-6">
-      <a href="/students" class="reveal mb-8 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+      <a href={publicPath("/students")} class="reveal mb-8 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
         ← Tilbage til elevprojekter
       </a>
 

@@ -52,9 +52,9 @@ const techFilters = Array.from(
         <p class="text-xs text-muted" id="tech-filter-status" aria-live="polite"></p>
       </div>
 
-      <div class="grid gap-8 lg:grid-cols-2">
+      <div class="grid items-stretch gap-8 lg:grid-cols-2">
         {projects.map((project, i) => (
-          <div class="reveal" style={`transition-delay: ${i * 0.1}s`}>
+          <div class="reveal flex h-full min-h-0" style={`transition-delay: ${i * 0.1}s`}>
             <ProjectCard project={project} />
           </div>
         ))}

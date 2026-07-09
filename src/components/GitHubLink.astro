@@ -3,12 +3,14 @@ interface Props {
   href: string;
   sublabel?: string;
   class?: string;
+  compact?: boolean;
 }
 
 const {
   href,
   sublabel = "Se kildekode",
   class: className = "",
+  compact = false,
 } = Astro.props;
 
 const accentColor = "#24292f";
@@ -20,7 +22,7 @@ const glowSecondary = "rgba(36, 41, 47, 0.06)";
   href={href}
   target="_blank"
   rel="noopener noreferrer"
-  class:list={["branded-link", className]}
+  class:list={["branded-link", compact && "branded-link--compact", className]}
   style={`--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg}; --branded-glow-secondary: ${glowSecondary};`}
 >
   <span class="branded-link-mark">
@@ -30,7 +32,7 @@ const glowSecondary = "rgba(36, 41, 47, 0.06)";
     <span class="branded-link-name">
       Git<span class="branded-link-accent">Hub</span>
     </span>
-    <span class="branded-link-action">{sublabel}</span>
+    <span class="branded-link-action">{compact ? "Kode" : sublabel}</span>
   </span>
   <svg
     class="branded-link-arrow"

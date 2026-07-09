@@ -4,6 +4,7 @@ import type { Project } from "../data/projects";
 interface Props {
   project: Pick<Project, "id" | "name" | "url" | "logo" | "accentColor" | "accentBg">;
   class?: string;
+  compact?: boolean;
 }
 
 const brandParts: Record<
@@ -22,7 +23,7 @@ const brandParts: Record<
   "vba-year-report-web": { before: "VBA — ", accent: "Årsrapport" },
 };
 
-const { project, class: className = "" } = Astro.props;
+const { project, class: className = "", compact = false } = Astro.props;
 const brand = brandParts[project.id];
 const isExternal = /^https?:\/\//i.test(project.url);
 const usesBrandFont = Boolean(brand?.font);
@@ -32,7 +33,7 @@ const usesBrandFont = Boolean(brand?.font);
   href={project.url}
   target={isExternal ? "_blank" : undefined}
   rel={isExternal ? "noopener noreferrer" : undefined}
-  class:list={["branded-link", className]}
+  class:list={["branded-link", compact && "branded-link--compact", className]}
   style={`--branded-accent: ${project.accentColor}; --branded-accent-bg: ${project.accentBg}; --branded-glow-secondary: ${brand?.glowSecondary ?? "transparent"};${brand?.font ? ` font-family: ${brand.font};` : ""}`}
 >
   <span class="branded-link-mark">
@@ -59,7 +60,7 @@ const usesBrandFont = Boolean(brand?.font);
         )
       }
     </span>
-    <span class="branded-link-action">Åbn platform</span>
+    <span class="branded-link-action">{compact ? "Platform" : "Åbn platform"}</span>
   </span>
   <svg
     class="branded-link-arrow"

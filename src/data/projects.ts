@@ -159,6 +159,32 @@ export const projects: Project[] = [
     credits: GUESTBOOK_CREDITS,
   },
   {
+    id: "dh-rooms",
+    name: "DH-Rooms",
+    tagline: "Datahouse lokalereservation med Room Finder og Azure AD",
+    description:
+      "Moderne skemaoversigt for Datahouse på Mercantec. Elever og medarbejdere logger ind med Microsoft (Azure AD), og bookinger hentes fra Exchange Room Mailboxes via Microsoft Graph — samme flow som Room Finder i Outlook.",
+    features: [
+      "Login med Azure AD (Entra ID) via NextAuth",
+      "Kalendervisning fra Room Mailboxes via Microsoft Graph",
+      "Skemaoversigt pr. dag: rum på 1. sal og Stue med variabel tidsgranularitet",
+      "Lokale bookinger og godkendelsesflow — klar til sync mod Outlook/Room Finder",
+    ],
+    techStack: [
+      { name: "Next.js", icon: "/tech/nextjs.svg" },
+      { name: "React", icon: "/tech/react.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: "Azure", icon: "/tech/azure.svg" },
+      { name: "Microsoft Graph", icon: "/tech/microsoftgraph.svg" },
+    ],
+    url: "https://rooms.mercantec.tech",
+    github: "https://github.com/Mercantech/DH-Rooms",
+    logo: "/projects/dh-rooms-logo.svg",
+    accentColor: "#0d9488",
+    accentBg: "rgba(13, 148, 136, 0.12)",
+    status: "live",
+  },
+  {
     id: "vba-year-report-web",
     name: "VBA — Årsrapport (web)",
     tagline: "Årsrapport fra Outlook via Microsoft Graph",
@@ -199,6 +225,7 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "uptimedaddy", name: "UptimeDaddy", role: "client", url: "https://uptimedaddy.mercantec.tech" },
   { id: "gf2learn", name: "GF2 Learn", role: "client", url: "https://learn.mags.dk" },
   { id: "skills", name: "Mercantec Skills", role: "client", url: "https://skills.mercantec.tech" },
+  { id: "dhrooms", name: "DH-Rooms", role: "client", url: "https://rooms.mercantec.tech" },
   { id: "videnstjek", name: "Videnstjek", role: "client" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

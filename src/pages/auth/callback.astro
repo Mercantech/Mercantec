@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
+import { publicPath } from "../../lib/site-url";
 ---
 
 <Layout title="Logger ind — Mercantec">
@@ -17,7 +18,7 @@ import Footer from "../../components/Footer.astro";
       <h1 class="mb-2 font-heading text-xl font-bold text-text">Logger ind</h1>
       <p id="callback-status" class="text-sm text-muted">Behandler OAuth-callback…</p>
       <pre id="callback-error" class="mt-4 hidden overflow-x-auto rounded-lg bg-red-50 p-4 text-left text-xs text-red-800"></pre>
-      <a id="callback-retry" href="/" class="mt-6 hidden inline-block text-sm font-medium text-primary hover:underline">
+      <a id="callback-retry" href={publicPath("/")} class="mt-6 hidden inline-block text-sm font-medium text-primary hover:underline">
         Tilbage til forsiden
       </a>
     </div>
@@ -26,7 +27,7 @@ import Footer from "../../components/Footer.astro";
 </Layout>
 
 <script>
-  import { exchangeCode } from "../../lib/auth";
+  import { exchangeCode, getSiteOrigin } from "../../lib/auth";
 
   const statusEl = document.getElementById("callback-status");
   const errorEl = document.getElementById("callback-error");
@@ -42,9 +43,11 @@ import Footer from "../../components/Footer.astro";
   }
 
   (async () => {
+    const siteOrigin = getSiteOrigin();
+
     // Normalisér trailing slash så redirect_uri matcher authorize-kaldet
     if (window.location.pathname.endsWith("/") && window.location.pathname !== "/") {
-      const normalized = `${window.location.origin}${window.location.pathname.replace(/\/+$/, "")}${window.location.search}${window.location.hash}`;
+      const normalized = `${siteOrigin}${window.location.pathname.replace(/\/+$/, "")}${window.location.search}${window.location.hash}`;
       window.history.replaceState(null, "", normalized);
     }
 
@@ -69,7 +72,10 @@ import Footer from "../../components/Footer.astro";
       window.dispatchEvent(new Event("mercantec-auth-changed"));
       const returnPath = sessionStorage.getItem("mercantec_auth_return") || "/";
       sessionStorage.removeItem("mercantec_auth_return");
-      window.location.replace(returnPath);
+      const destination = returnPath.startsWith("/")
+        ? `${siteOrigin}${returnPath}`
+        : returnPath;
+      window.location.replace(destination);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       let hint: string | undefined;

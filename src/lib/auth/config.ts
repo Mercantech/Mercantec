@@ -25,30 +25,44 @@ function isMercantecHost(hostname: string): boolean {
   return hostname === "mercantec.tech" || hostname.endsWith(".mercantec.tech");
 }
 
+declare global {
+  interface Window {
+    /** Sat af /site-origin.js ved container-start (runtime env). */
+    __MERCANTEC_SITE_ORIGIN__?: string;
+  }
+}
+
+function normalizeOrigin(origin: string): string {
+  return origin.replace(/\/$/, "");
+}
+
+function configuredSiteOrigin(): string | undefined {
+  const fromEnv = import.meta.env.PUBLIC_SITE_URL as string | undefined;
+  return fromEnv?.trim() ? normalizeOrigin(fromEnv) : undefined;
+}
+
 /**
  * Offentlig site-origin til OAuth, links og same-origin API-proxy.
  * Bruger aldrig intern Docker-port (4040) på mercantec.tech.
  */
 export function getSiteOrigin(): string {
-  const configured = import.meta.env.PUBLIC_SITE_URL as string | undefined;
+  if (typeof window !== "undefined") {
+    const runtime = window.__MERCANTEC_SITE_ORIGIN__?.trim();
+    if (runtime) {
+      return normalizeOrigin(runtime);
+    }
 
-  if (typeof window === "undefined") {
-    return (configured ?? "https://mercantec.tech").replace(/\/$/, "");
+    const { hostname } = window.location;
+    if (isMercantecHost(hostname)) {
+      return `https://${hostname}`;
+    }
+
+    if (isLocalDevHost(hostname)) {
+      return window.location.origin;
+    }
   }
 
-  if (isLocalDevHost(window.location.hostname)) {
-    return window.location.origin;
-  }
-
-  if (configured?.trim()) {
-    return configured.replace(/\/$/, "");
-  }
-
-  if (isMercantecHost(window.location.hostname)) {
-    return `https://${window.location.hostname}`;
-  }
-
-  return window.location.origin;
+  return configuredSiteOrigin() ?? "https://mercantec.tech";
 }
 
 /** Redirect fra intern host-port (fx :4040) til offentlig HTTPS-URL. */

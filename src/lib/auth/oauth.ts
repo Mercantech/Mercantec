@@ -48,13 +48,6 @@ async function postToken(body: URLSearchParams): Promise<TokenResponse> {
 
 export async function startLogin(): Promise<void> {
   redirectIfInternalPort();
-  if (
-    typeof window !== "undefined" &&
-    window.location.hostname === "mercantec.tech" &&
-    window.location.port === "4040"
-  ) {
-    return;
-  }
 
   const cfg = getAuthConfig();
   const redirectUri = getRedirectUri();

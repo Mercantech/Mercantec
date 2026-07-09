@@ -211,6 +211,54 @@ export const projects: Project[] = [
     accentBg: "rgba(24, 138, 156, 0.10)",
     status: "live",
   },
+  {
+    id: "videnstjek",
+    name: "Videnstjek",
+    tagline: "Interaktive quizzer til GF2, backend og frontend",
+    description:
+      "Quiz-app til Mercantec-elever med kategoriserede spørgsmål, forklaringer på alle svar og admin-panel til at vedligeholde indhold. Resultater gemmes lokalt på enheden — fokus på læring uden server-side tracking.",
+    features: [
+      "Quizzer i GF2, Backend og Frontend med søgning og filtrering",
+      "Multiple-choice med detaljerede forklaringer på hvert svar",
+      "Admin-panel til at oprette, redigere og indeksere quizzer (JSON)",
+      "Responsivt UI med progress og resultatoversigt efter afslutning",
+    ],
+    techStack: [
+      { name: ".NET", icon: "/tech/dotnet.svg" },
+      { name: "Blazor", icon: "/tech/blazor.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+    ],
+    url: "https://videnstjek.mags.dk",
+    github: "https://github.com/Mercantech/videnstjek",
+    logo: "/projects/videnstjek-logo.svg",
+    accentColor: "#6366f1",
+    accentBg: "rgba(99, 102, 241, 0.12)",
+    status: "live",
+  },
+  {
+    id: "banko",
+    name: "Banko",
+    tagline: "Bankoplader, opråber og starterkode til afleveringen",
+    description:
+      "Mercantecs Banko-platform til undervisning: generér unikke plader i browseren, brug opråber-siden under spil — og find starterkode i konsol og Blazor til elev-afleveringen. Hostet på GitHub Pages med opgavebeskrivelse på Notion.",
+    features: [
+      "Web: generér bankoplader med navn eller tilfældigt id (seedrandom)",
+      "Opråber-side og regler til brug under banko",
+      "Starterkode: .NET konsol-app og valgfri Blazor GUI-skabelon",
+      "Guide til scraping/automation som del af opgaven",
+    ],
+    techStack: [
+      { name: "GitHub", icon: "/tech/github.svg" },
+      { name: ".NET", icon: "/tech/dotnet.svg" },
+      { name: "Blazor", icon: "/tech/blazor.svg" },
+    ],
+    url: "https://mercantech.github.io/Banko/",
+    github: "https://github.com/Mercantech/Banko",
+    logo: "/projects/banko-logo.svg",
+    accentColor: "#2c3e50",
+    accentBg: "rgba(44, 62, 80, 0.10)",
+    status: "live",
+  },
 ];
 
 export interface EcosystemNode {
@@ -226,6 +274,7 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "gf2learn", name: "GF2 Learn", role: "client", url: "https://learn.mags.dk" },
   { id: "skills", name: "Mercantec Skills", role: "client", url: "https://skills.mercantec.tech" },
   { id: "dhrooms", name: "DH-Rooms", role: "client", url: "https://rooms.mercantec.tech" },
-  { id: "videnstjek", name: "Videnstjek", role: "client" },
+  { id: "videnstjek", name: "Videnstjek", role: "client", url: "https://videnstjek.mags.dk" },
+  { id: "banko", name: "Banko", role: "client", url: "https://mercantech.github.io/Banko/" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

@@ -34,6 +34,14 @@ import Footer from "../../components/Footer.astro";
           </div>
           <div class="flex flex-wrap gap-3">
             <a
+              href="https://projekt.gf2.dk"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+            >
+              Åbn platform
+            </a>
+            <a
               href="https://github.com/Mercantech/VBA/tree/main/year-report-web"
               target="_blank"
               rel="noopener noreferrer"
@@ -90,8 +98,8 @@ import Footer from "../../components/Footer.astro";
 
           <h2>Drift / deploy</h2>
           <p>
-            Webdelen har egen Docker Compose i repoet. I praksis peger man en Cloudflare tunnel på
-            host-porten, og sørger for at Azure Redirect URI matcher appens callback.
+            Platformen kører live på <a href="https://projekt.gf2.dk" target="_blank" rel="noopener noreferrer">projekt.gf2.dk</a>.
+            Webdelen har egen Docker Compose i repoet med Cloudflare tunnel og Azure Redirect URI til appens callback.
           </p>
 
           <p class="rounded-xl bg-section px-4 py-3 text-sm text-muted">

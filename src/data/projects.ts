@@ -76,6 +76,32 @@ export const projects: Project[] = [
     status: "live",
   },
   {
+    id: "gf2-learn",
+    name: "GF2 Learn",
+    tagline: "Pensum, opgaver og projekter til GF2 programmering",
+    description:
+      "Central læringsplatform til Grundforløb 2 programmering på Mercantec. Pensum og opgaver er Markdown-baseret med C#-playground i browseren (Monaco + WASM), og elever logger ind via Mercantec Auth for profil og progression.",
+    features: [
+      "Pensum, opgaver og 7 projektforløb i tre niveauer",
+      "Interaktiv C#-playground med Monaco-editor i browseren",
+      "Markdown-indhold med custom directives (git-step, exercise, osv.)",
+      "OAuth via Mercantec Auth (klient gf2-learn)",
+    ],
+    techStack: [
+      { name: ".NET", icon: "/tech/dotnet.svg" },
+      { name: "Blazor", icon: "/tech/blazor.svg" },
+      { name: "PostgreSQL", icon: "/tech/postgresql.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: "OAuth 2.0", icon: "/tech/oauth.svg" },
+    ],
+    url: "https://learn.mags.dk",
+    github: "https://github.com/Mercantech/GF2-Learn",
+    logo: "/projects/gf2-learn-logo.svg",
+    accentColor: "#0284c7",
+    accentBg: "rgba(2, 132, 199, 0.10)",
+    status: "live",
+  },
+  {
     id: "vba-year-report-web",
     name: "VBA — Årsrapport (web)",
     tagline: "Årsrapport fra Outlook via Microsoft Graph",
@@ -95,12 +121,12 @@ export const projects: Project[] = [
       { name: "Azure", icon: "/tech/azure.svg" },
       { name: "Microsoft Graph", icon: "/tech/microsoftgraph.svg" },
     ],
-    url: "/projekter/vba-year-report-web",
+    url: "https://projekt.gf2.dk",
     github: "https://github.com/Mercantech/VBA/tree/main/year-report-web",
     logo: "/projects/vba-year-report-logo.svg",
     accentColor: "#188a9c",
     accentBg: "rgba(24, 138, 156, 0.10)",
-    status: "beta",
+    status: "live",
   },
 ];
 
@@ -114,7 +140,7 @@ export interface EcosystemNode {
 export const ecosystemNodes: EcosystemNode[] = [
   { id: "auth", name: "Mercantec Auth", role: "hub", url: "https://auth.mercantec.tech" },
   { id: "uptimedaddy", name: "UptimeDaddy", role: "client", url: "https://uptimedaddy.mercantec.tech" },
-  { id: "gf2learn", name: "GF2 Learn", role: "client" },
+  { id: "gf2learn", name: "GF2 Learn", role: "client", url: "https://learn.mags.dk" },
   { id: "videnstjek", name: "Videnstjek", role: "client" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

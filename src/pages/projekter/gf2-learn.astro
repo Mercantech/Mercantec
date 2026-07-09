@@ -1,0 +1,100 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import Gf2LearnPlatformLink from "../../components/Gf2LearnPlatformLink.astro";
+---
+
+<Layout
+  title="GF2 Learn — Mercantec"
+  description="Læringsplatform til GF2 programmering: C#, Git, opgaver, projekter og browser-playground med Mercantec Auth."
+>
+  <Navbar />
+
+  <main class="bg-section px-6 pt-28 pb-20">
+    <div class="mx-auto max-w-4xl">
+      <div class="reveal rounded-2xl border border-gray-200/60 bg-white p-8 shadow-lg">
+        <div class="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex items-center gap-4">
+            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#0284c7]/10">
+              <img
+                src="/projects/gf2-learn-logo.svg"
+                alt="GF2 Learn logo"
+                class="h-9 w-9 object-contain"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <h1 class="font-heading text-2xl font-bold text-text sm:text-3xl">GF2 Learn</h1>
+              <p class="text-sm text-muted">
+                Blazor Web App til pensum, opgaver og projekter — med Mercantec Auth
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <Gf2LearnPlatformLink />
+            <a
+              href="https://github.com/Mercantech/GF2-Learn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-text transition-colors hover:border-gray-300 hover:bg-gray-50"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="prose prose-slate max-w-none">
+          <h2>Hvad er det?</h2>
+          <p>
+            GF2 Learn er Mercantecs centrale læringsplatform til <strong>Grundforløb 2
+            programmering</strong>. Indholdet lever i versioneret Markdown med YAML-frontmatter,
+            og platformen kombinerer teori, øvelser og projektforløb i én Blazor Web App.
+          </p>
+
+          <h2>Tre sektioner</h2>
+          <ul>
+            <li><strong>Pensum</strong> — C#-teori og Git</li>
+            <li><strong>Opgaver</strong> — øvelser på begynder-, mellem- og avanceret niveau</li>
+            <li><strong>Projekter</strong> — syv forløb fordelt på tre niveauer</li>
+          </ul>
+          <p>
+            Pensum, opgaver og projekter er offentligt tilgængelige. <code>/profile</code> kræver
+            login via Mercantec Auth.
+          </p>
+
+          <h2>C#-playground i browseren</h2>
+          <p>
+            På opgavesider kan elever køre top-level C# direkte i browseren via WebAssembly.
+            Editoren er <strong>Monaco</strong> (samme motor som VS Code) med snippets og
+            compile-fejl i output-panelet. Ekstra assemblies whitelistes i playground-konfigurationen.
+          </p>
+
+          <h2>Mercantec Auth</h2>
+          <ul>
+            <li>OAuth-klient: <code>gf2-learn</code></li>
+            <li>Callback: <code>/signin-mercantec</code></li>
+            <li>Produktion: <code>https://learn.mags.dk/signin-mercantec</code></li>
+            <li>JWT valideres mod <code>iss=https://auth.mercantec.tech</code> og <code>aud=mercantec-apps</code></li>
+          </ul>
+
+          <h2>Tech stack</h2>
+          <ul>
+            <li>Blazor Web App (.NET 10) med Static SSR</li>
+            <li>Markdig med custom directives (<code>git-step</code>, <code>exercise</code>, <code>code-playground</code>, …)</li>
+            <li>PostgreSQL til brugerprogression ved login</li>
+            <li>Docker Compose + Cloudflare Tunnel til deploy</li>
+          </ul>
+
+          <h2>Drift</h2>
+          <p>
+            Produktion kører på <a href="https://learn.mags.dk" target="_blank" rel="noopener noreferrer">learn.mags.dk</a>.
+            Appen deployes via Dokploy med Traefik og PostgreSQL i samme stack.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

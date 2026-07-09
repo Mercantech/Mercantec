@@ -67,7 +67,7 @@ export function renderStudentProjectCard(
 ): string {
   const { showStatus = false, linkToDetail = true } = options;
   const thumb = project.media ? firstImageUrl(project.media) : null;
-  const href = linkToDetail ? `/students/${project.id}` : "#";
+  const href = linkToDetail ? `/students/projekt?id=${project.id}` : "#";
 
   const thumbHtml = thumb
     ? `<img src="${escapeHtml(thumb)}" alt="" class="h-full w-full object-cover" loading="lazy" />`

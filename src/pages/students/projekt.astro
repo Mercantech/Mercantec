@@ -53,9 +53,23 @@ import Footer from "../../components/Footer.astro";
       : "";
   }
 
-  async function loadProject() {
+  function getProjectId(): string | null {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get("id");
+    if (fromQuery) return fromQuery;
+
+    // Bagudkompatibilitet hvis nginx senere rewriter /students/{uuid} hertil
     const segments = window.location.pathname.split("/").filter(Boolean);
-    const id = segments[segments.length - 1];
+    const last = segments[segments.length - 1];
+    if (last && last !== "projekt" && last !== "students") {
+      return last;
+    }
+
+    return null;
+  }
+
+  async function loadProject() {
+    const id = getProjectId();
     if (!id) {
       showError("Ugyldigt projekt-id.");
       return;

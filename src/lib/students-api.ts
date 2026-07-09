@@ -1,7 +1,23 @@
 import { mercantecFetch } from "./auth/fetch";
 
-const API_BASE =
-  import.meta.env.PUBLIC_STUDENTS_API_URL ?? "http://localhost:4041";
+function getApiBase(): string {
+  const configured = import.meta.env.PUBLIC_STUDENTS_API_URL as string | undefined;
+
+  if (configured && configured.trim() !== "" && configured !== "/") {
+    return configured.replace(/\/$/, "");
+  }
+
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
+  return "";
+}
+
+function apiUrl(path: string): string {
+  const base = getApiBase();
+  return base ? `${base}${path}` : path;
+}
 
 export type ProjectStatus = "draft" | "pending" | "approved" | "rejected";
 export type MediaType = "image" | "video" | "video_embed";
@@ -69,12 +85,8 @@ async function parseJson<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-function apiUrl(path: string): string {
-  return `${API_BASE.replace(/\/$/, "")}${path}`;
-}
-
 export function getStudentsApiBaseUrl(): string {
-  return API_BASE;
+  return getApiBase();
 }
 
 export async function fetchApprovedProjects(

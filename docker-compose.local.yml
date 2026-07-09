@@ -1,0 +1,20 @@
+# Lokal udvikling: eksponér porte på host (uden Traefik).
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+#
+# Domæner i Traefik-labels ignoreres lokalt; brug localhost + porte nedenfor.
+# Sæt i .env:
+#   PUBLIC_STUDENTS_API_URL=http://localhost:4041
+
+services:
+  students-api:
+    ports:
+      - "${STUDENTS_API_PUBLISH_PORT:-4041}:4041"
+
+  postgres:
+    ports:
+      - "${POSTGRES_PUBLISH_PORT:-5433}:5432"
+
+  minio:
+    ports:
+      - "${MINIO_API_PUBLISH_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PUBLISH_PORT:-9001}:9001"

@@ -103,10 +103,13 @@ import Footer from "../../components/Footer.astro";
       loadingEl?.classList.add("hidden");
       errorEl?.classList.remove("hidden");
       if (errorEl) {
-        errorEl.textContent =
-          err instanceof Error
-            ? err.message
-            : "Kunne ikke hente elevprojekter. Er API'en startet?";
+        const raw = err instanceof Error ? err.message : "";
+        const isNetwork =
+          raw === "Failed to fetch" ||
+          /failed to fetch|networkerror|load failed/i.test(raw);
+        errorEl.textContent = isNetwork
+          ? "Kunne ikke kontakte elevprojekt-API'en. Genstart deploy med hele docker-compose (web + students-api + postgres + minio)."
+          : raw || "Kunne ikke hente elevprojekter.";
       }
     }
   }

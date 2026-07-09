@@ -1,52 +1,39 @@
 # Deploy — Students API
 
-## 1. Miljø på serveren
+## Traefik / Dokploy (produktion)
+
+API og media eksponeres via Traefik-labels i `docker-compose.yml` (samme mønster som UptimeDaddy).
+
+| Miljøvariabel | Standard | Service |
+|---------------|----------|---------|
+| `STUDENTS_API_DOMAIN` | `api-students.mercantec.tech` | ASP.NET API (port 4041) |
+| `STUDENTS_MEDIA_DOMAIN` | `media-students.mercantec.tech` | MinIO (port 9000) |
+
+**Krav:**
+- Eksternt Docker-netværk `dokploy-network` på hosten
+- Cloudflare wildcard `*.mercantec.tech` → tunnel → Traefik (port 80)
+
+**Verificér efter deploy:**
+
+```bash
+curl https://api-students.mercantec.tech/health
+curl "https://api-students.mercantec.tech/api/student-projects"
+```
+
+Frontend skal bygges med:
+
+```env
+PUBLIC_STUDENTS_API_URL=https://api-students.mercantec.tech
+```
+
+## Selvstændig deploy (kun API-stack)
+
+Hvis API deployes separat fra mercantec.tech-web:
 
 ```bash
 cd students-api
 cp .env.example .env
-# Rediger POSTGRES_PASSWORD, MINIO_ROOT_PASSWORD
-```
-
-Produktion `.env`:
-
-```env
-API_PORT=4041
-STORAGE_PUBLIC_URL=https://media.mercantec.tech/student-projects
-```
-
-## 2. Start stack
-
-```bash
 docker compose up -d --build
-curl http://127.0.0.1:4041/health
 ```
 
-## 3. Cloudflare Tunnel routes
-
-| Hostname | Service |
-|----------|---------|
-| `students-api.mercantec.tech` | `http://127.0.0.1:4041` |
-| `media.mercantec.tech` | `http://127.0.0.1:9000` |
-
-## 4. Frontend build-arg
-
-I Mercantec web-deploy (`docker-compose.yml`):
-
-```env
-PUBLIC_STUDENTS_API_URL=https://students-api.mercantec.tech
-```
-
-Genbyg web-containeren efter ændring.
-
-## 5. Auth / CORS
-
-- API CORS skal inkludere `https://mercantec.tech`
-- JWT audience: `mercantec-apps` (samme som frontend)
-- Roller: `Student` (indsend), `Teacher` / `Admin` (moderation)
-
-## 6. Verificering
-
-1. `GET https://students-api.mercantec.tech/health` → `{ "status": "ok" }`
-2. Log ind på mercantec.tech → `/students/indsend`
-3. Opret kladde → indsend → godkend via `/students/admin`
+Se `students-api/docker-compose.yml` for Traefik-labels.

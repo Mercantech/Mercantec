@@ -126,27 +126,24 @@ Elever kan indsende projekter med billeder, video, GitHub- og live-links. Data h
 | `/students/mine` | Egne projekter og status |
 | `/students/admin` | Moderation (Teacher/Admin) |
 
-**API** (`students-api/`):
+**API** kører som del af hoved-`docker-compose.yml` med **Traefik-labels** (samme mønster som UptimeDaddy):
+
+| Domæne | Service |
+|--------|---------|
+| `api-students.mercantec.tech` | students-api |
+| `media-students.mercantec.tech` | MinIO (offentlige filer) |
+
+Frontend kalder API via `PUBLIC_STUDENTS_API_URL` (build-arg).
+
+**Lokal udvikling:**
 
 ```bash
-cd students-api
-cp .env.example .env
-docker compose up --build -d
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+# API: http://localhost:4041/health
+npm run dev   # sæt PUBLIC_STUDENTS_API_URL=http://localhost:4041 i .env
 ```
 
-- API: http://localhost:4041/health
-- MinIO: http://localhost:9001
-
-Sæt `PUBLIC_STUDENTS_API_URL` i `.env` (frontend) til API'ens URL.
-
-**Produktion (Dokploy):**
-
-1. Deploy `students-api/docker-compose.yml` (API + PostgreSQL + MinIO)
-2. Cloudflare Tunnel:
-   - `students-api.mercantec.tech` → port `4041`
-   - `media.mercantec.tech` → MinIO port `9000`
-3. Sæt `PUBLIC_STUDENTS_API_URL=https://students-api.mercantec.tech` ved web-build
-4. Sæt `STORAGE_PUBLIC_URL=https://media.mercantec.tech/student-projects` i API-miljø
+**Produktion (Dokploy):** kræver eksternt netværk `dokploy-network` + wildcard `*.mercantec.tech` i Cloudflare Tunnel → Traefik.
 
 ## Struktur
 

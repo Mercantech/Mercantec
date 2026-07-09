@@ -1,11 +1,16 @@
-# Mercantec — Docker Compose
+# Mercantec — Docker Compose (Dokploy + Traefik)
 # Brug: docker compose up -d --build
 #
-# Cloudflare Tunnel (samme mønster som mags.dk):
-#   Zero Trust → MAGS-OLC → Published application routes
-#   Hostname: mercantec.tech  →  http://127.0.0.1:4040
+# Routing (samme mønster som UptimeDaddy):
+#   1. Cloudflare: *.mercantec.tech (wildcard CNAME → tunnel)
+#   2. Tunnel ingress: *.mercantec.tech → http://localhost:80
+#   3. Traefik (Dokploy): Host(`<domæne>`) → container-port
 #
-# Apex-domæner routes IKKE via Dokploy Traefik — kun direkte tunnel til host-port.
+# mercantec.tech (web) eksponeres stadig via host-port + Cloudflare Tunnel (4040).
+# students-api og media eksponeres via Traefik-labels på dokploy-network.
+#
+# Lokal udvikling med host-porte:
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 
 name: mercantec
 
@@ -20,10 +25,15 @@ services:
         PUBLIC_AUTH_ISSUER: ${PUBLIC_AUTH_ISSUER:-https://auth.mercantec.tech}
         PUBLIC_AUTH_AUDIENCE: ${PUBLIC_AUTH_AUDIENCE:-mercantec-apps}
         PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://mercantec.tech}
-        PUBLIC_STUDENTS_API_URL: ${PUBLIC_STUDENTS_API_URL:-https://students-api.mercantec.tech}
+        PUBLIC_STUDENTS_API_URL: ${PUBLIC_STUDENTS_API_URL:-https://api-students.mercantec.tech}
     container_name: mercantec-web
     ports:
       - "${WEB_PORT:-4040}:4040"
+    networks:
+      - internal
+    depends_on:
+      students-api:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4040/"]
@@ -32,6 +42,92 @@ services:
       retries: 3
       start_period: 10s
 
+  students-api:
+    build:
+      context: ./students-api
+      dockerfile: Dockerfile
+    container_name: mercantec-students-api
+    networks:
+      - internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.mercantec-students-api.rule=Host(`${STUDENTS_API_DOMAIN:-api-students.mercantec.tech}`)
+      - traefik.http.routers.mercantec-students-api.entrypoints=web
+      - traefik.http.routers.mercantec-students-api.service=mercantec-students-api
+      - traefik.http.services.mercantec-students-api.loadbalancer.server.port=4041
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=students;Username=${POSTGRES_USER:-students};Password=${POSTGRES_PASSWORD:-students}
+      Auth__Authority: ${AUTH_AUTHORITY:-https://auth.mercantec.tech}
+      Auth__Audience: ${AUTH_AUDIENCE:-mercantec-apps}
+      Storage__Endpoint: http://minio:9000
+      Storage__AccessKey: ${MINIO_ROOT_USER:-minioadmin}
+      Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      Storage__Bucket: student-projects
+      Storage__PublicUrl: ${STORAGE_PUBLIC_URL:-https://media-students.mercantec.tech/student-projects}
+      Storage__UseSsl: "false"
+      Cors__Origins__0: https://mercantec.tech
+      Cors__Origins__1: http://localhost:4321
+      Cors__Origins__2: http://localhost:4040
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:4041/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 45s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: mercantec-students-postgres
+    networks:
+      - internal
+    environment:
+      POSTGRES_DB: students
+      POSTGRES_USER: ${POSTGRES_USER:-students}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-students}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-students} -d students"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: mercantec-students-minio
+    command: server /data --console-address ":9001"
+    networks:
+      - internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.mercantec-students-media.rule=Host(`${STUDENTS_MEDIA_DOMAIN:-media-students.mercantec.tech}`)
+      - traefik.http.routers.mercantec-students-media.entrypoints=web
+      - traefik.http.routers.mercantec-students-media.service=mercantec-students-media
+      - traefik.http.services.mercantec-students-media.loadbalancer.server.port=9000
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
+
 networks:
-  default:
-    name: mercantec_net
+  internal:
+  dokploy-network:
+    external: true

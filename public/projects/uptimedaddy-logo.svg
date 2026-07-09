@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="64" viewBox="0 0 320 64" role="img" aria-label="UptimeDaddy">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1f8b68"/>
+      <stop offset="100%" stop-color="#408a71"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon (from og-brand.svg) -->
+  <g transform="translate(8,6)">
+    <rect x="0" y="0" width="52" height="52" rx="14" fill="url(#accent)" opacity="0.18"/>
+    <path d="M26 14 L40 26 L26 38 L12 26 Z" fill="none" stroke="#4ea584" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="26" cy="26" r="6.2" fill="#4ea584"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="72" y="41" fill="#091413" font-family="system-ui, -apple-system, Segoe UI, Inter, sans-serif" font-size="30" font-weight="800">
+    UptimeDaddy
+  </text>
+</svg>
+

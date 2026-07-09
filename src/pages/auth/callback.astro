@@ -32,14 +32,22 @@ import Footer from "../../components/Footer.astro";
   const errorEl = document.getElementById("callback-error");
   const retryEl = document.getElementById("callback-retry");
 
-  function showError(message: string) {
+  function showError(message: string, hint?: string) {
     if (statusEl) statusEl.textContent = "Login fejlede";
     errorEl?.classList.remove("hidden");
-    if (errorEl) errorEl.textContent = message;
+    if (errorEl) {
+      errorEl.textContent = hint ? `${message}\n\n${hint}` : message;
+    }
     retryEl?.classList.remove("hidden");
   }
 
   (async () => {
+    // Normalisér trailing slash så redirect_uri matcher authorize-kaldet
+    if (window.location.pathname.endsWith("/") && window.location.pathname !== "/") {
+      const normalized = `${window.location.origin}${window.location.pathname.replace(/\/+$/, "")}${window.location.search}${window.location.hash}`;
+      window.history.replaceState(null, "", normalized);
+    }
+
     const params = new URLSearchParams(window.location.search);
     const error = params.get("error");
     const errorDesc = params.get("error_description");
@@ -61,7 +69,20 @@ import Footer from "../../components/Footer.astro";
       window.dispatchEvent(new Event("mercantec-auth-changed"));
       window.location.replace("/");
     } catch (err) {
-      showError(err instanceof Error ? err.message : String(err));
+      const message = err instanceof Error ? err.message : String(err);
+      let hint: string | undefined;
+
+      if (message.includes("state")) {
+        hint = "Start login forfra fra forsiden — PKCE/state gemmes kun i den samme browserfane.";
+      } else if (message.includes("PKCE verifier")) {
+        hint = "Sessionen blev nulstillet under login. Klik «Tilbage til forsiden» og prøv igen.";
+      } else if (/failed to fetch|networkerror|load failed/i.test(message)) {
+        hint = "Token-proxy kunne ikke nå auth-serveren. Genbyg Docker-containeren og tjek at /api/oauth/token er tilgængelig.";
+      } else if (message.includes("redirect_uri") || message.includes("invalid_grant")) {
+        hint = `Redirect URI skal være whitelistet hos auth-admin: ${import.meta.env.PUBLIC_SITE_URL ?? "https://mercantec.tech"}/auth/callback`;
+      }
+
+      showError(message, hint);
     }
   })();
 </script>

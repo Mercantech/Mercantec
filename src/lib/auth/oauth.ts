@@ -1,4 +1,4 @@
-import { getAuthConfig, getRedirectUri } from "./config";
+import { getAuthConfig, getRedirectUri, getSiteOrigin, getTokenEndpoint } from "./config";
 import {
   buildAuthorizeUrl,
   randomVerifier,
@@ -24,8 +24,7 @@ export interface TokenResponse {
 }
 
 async function postToken(body: URLSearchParams): Promise<TokenResponse> {
-  const { authBaseUrl } = getAuthConfig();
-  const res = await fetch(`${authBaseUrl}/oauth/token`, {
+  const res = await fetch(getTokenEndpoint(), {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
@@ -48,6 +47,16 @@ async function postToken(body: URLSearchParams): Promise<TokenResponse> {
 }
 
 export async function startLogin(): Promise<void> {
+  if (typeof window !== "undefined") {
+    const { hostname, port, protocol } = window.location;
+    const onInternalMercantecPort =
+      hostname === "mercantec.tech" && port === "4040" && protocol === "http:";
+    if (onInternalMercantecPort) {
+      window.location.assign("https://mercantec.tech/");
+      return;
+    }
+  }
+
   const cfg = getAuthConfig();
   const redirectUri = getRedirectUri();
   const verifier = randomVerifier(64);
@@ -123,6 +132,6 @@ export async function refreshAccessToken(): Promise<string | null> {
 export function logout(): void {
   const cfg = getAuthConfig();
   clearTokens();
-  const returnUrl = window.location.origin + "/";
+  const returnUrl = `${getSiteOrigin()}/`;
   window.location.href = `${cfg.authBaseUrl.replace(/\/$/, "")}/signout?returnUrl=${encodeURIComponent(returnUrl)}`;
 }

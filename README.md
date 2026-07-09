@@ -85,15 +85,20 @@ Siden integrerer med [Mercantec Auth](https://auth.mercantec.tech) via OAuth 2.0
 2. Callback på `/auth/callback` bytter code til tokens (sessionStorage)
 3. "Log ud" rydder tokens og navigerer til `/signout?returnUrl=...`
 
-**Før login virker i produktion skal følgende registreres hos auth-admin:**
+**Før login virker skal følgende registreres hos auth-admin:**
 
 | Indstilling | Værdi |
 |-------------|--------|
 | `client_id` | `demo` (dev) eller jeres produktions-klient |
 | Redirect URI | `https://mercantec.tech/auth/callback` |
-| Redirect URI (dev) | `http://localhost:4321/auth/callback` |
-| Redirect URI (docker) | `http://localhost:4040/auth/callback` |
-| CORS (`Cors:SpaOrigins`) | `https://mercantec.tech` (+ dev-origins) |
+| Redirect URI (lokal dev) | `http://localhost:4321/auth/callback` |
+| CORS (`Cors:SpaOrigins`) | `https://mercantec.tech` — kun nødvendig uden token-proxy |
+
+**Bemærk:** Port `4040` er kun intern (Docker/tunnel). Login testes via **https://mercantec.tech** — ikke `http://mercantec.tech:4040`.
+
+**Token-proxy:** Browseren kalder `POST /api/oauth/token` på samme origin (nginx/Vite proxy → auth.mercantec.tech). Det undgår CORS-problemer.
+
+Efter ændringer i auth-kode eller nginx: `docker compose up -d --build`
 
 Kontakt: mags@mercantec.dk
 

@@ -25,9 +25,7 @@ const isTeam = credits.developers.length > 1;
 const mags = credits.developers.find((dev) => dev.name === MAGS.name);
 const h5Team = credits.developers.filter((dev) => dev.name !== MAGS.name);
 const teamNames = h5Team.map((dev) => dev.name).join(" · ");
-const teamDisplayName = compact
-  ? `H5 + ${mags?.name ?? MAGS.name}`
-  : `${teamNames}${mags ? ` + ${mags.name}` : ""}`;
+const teamDisplayName = `${teamNames}${mags ? ` + ${mags.name}` : ""}`;
 const teamSublabel = compact ? "Holdet" : (credits.moreLabel ?? "Se holdet");
 const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg}; --branded-glow-secondary: color-mix(in srgb, ${accentColor} 6%, transparent);`;
 ---
@@ -159,5 +157,19 @@ const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg
     box-shadow:
       0 4px 14px color-mix(in srgb, var(--branded-accent) 20%, transparent),
       0 8px 24px color-mix(in srgb, var(--branded-accent) 12%, transparent);
+  }
+
+  :global(.branded-link--compact.developed-by-team) {
+    flex: 1.35 1 0;
+  }
+
+  :global(.branded-link--compact.developed-by-team .branded-link-name) {
+    white-space: normal;
+    line-height: 1.15;
+    font-size: 0.68rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>

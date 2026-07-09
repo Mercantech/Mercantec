@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import EcosystemDiagram from "../components/EcosystemDiagram.astro";
+import Footer from "../components/Footer.astro";
+import { projects } from "../data/projects";
+---
+
+<Layout>
+  <Navbar />
+  <Hero />
+
+  <section id="projekter" class="bg-section px-6 py-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="reveal mb-12 text-center">
+        <h2 class="mb-4 font-heading text-3xl font-bold text-text sm:text-4xl">
+          Vores projekter
+        </h2>
+        <p class="mx-auto max-w-2xl text-text/70">
+          Digitale platforme udviklet af Mercantec-elever — fra central login til
+          uptime-monitorering og meget mere.
+        </p>
+      </div>
+
+      <div class="grid gap-8 lg:grid-cols-2">
+        {projects.map((project, i) => (
+          <div class="reveal" style={`transition-delay: ${i * 0.1}s`}>
+            <ProjectCard project={project} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <EcosystemDiagram />
+  <Footer />
+</Layout>

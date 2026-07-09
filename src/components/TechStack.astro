@@ -1,0 +1,33 @@
+---
+import type { TechItem } from "../data/projects";
+
+interface Props {
+  items: TechItem[];
+  accentColor: string;
+}
+
+const { items, accentColor } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-3">
+  {
+    items.map((item) => (
+      <div class="group relative" title={item.name}>
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200/80 bg-white transition-all group-hover:-translate-y-0.5 group-hover:shadow-md"
+          style={`--accent: ${accentColor}`}
+        >
+          <img
+            src={item.icon}
+            alt={item.name}
+            class="h-5 w-5 object-contain opacity-70 transition-opacity group-hover:opacity-100"
+            loading="lazy"
+          />
+        </div>
+        <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-text px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+          {item.name}
+        </span>
+      </div>
+    ))
+  }
+</div>

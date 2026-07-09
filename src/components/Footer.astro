@@ -1,0 +1,55 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-footer px-6 py-12">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-8 sm:flex-row sm:justify-between">
+    <div class="flex flex-col items-center gap-4 sm:items-start">
+      <a href="/" aria-label="Mercantec forside">
+        <img src="/brand/logo-dark.svg" alt="Mercantec" class="h-8 w-auto" />
+      </a>
+      <p class="text-sm text-muted">Flere projekter kommer snart.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-6">
+      <a
+        href="https://mercantec.dk"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm font-medium text-text transition-colors hover:text-primary"
+      >
+        mercantec.dk
+      </a>
+      <a
+        href="https://github.com/Mercantech"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm font-medium text-text transition-colors hover:text-primary"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://auth.mercantec.tech"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm font-medium text-text transition-colors hover:text-primary"
+      >
+        Auth
+      </a>
+      <a
+        href="https://uptimedaddy.mercantec.tech"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm font-medium text-text transition-colors hover:text-primary"
+      >
+        UptimeDaddy
+      </a>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-8 max-w-6xl border-t border-gray-300/50 pt-6 text-center">
+    <p class="text-xs text-muted">
+      &copy; {year} Mercantec — platforme bygget af elever
+    </p>
+  </div>
+</footer>

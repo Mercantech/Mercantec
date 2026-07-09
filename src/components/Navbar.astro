@@ -1,0 +1,82 @@
+---
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-primary/80 backdrop-blur-md transition-colors duration-300"
+  id="navbar"
+>
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-3" aria-label="Mercantec forside">
+      <img src="/brand/logo.svg" alt="Mercantec" class="h-8 w-auto logo-light" />
+      <img src="/brand/logo-dark.svg" alt="Mercantec" class="hidden h-8 w-auto logo-dark" />
+    </a>
+
+    <div class="flex items-center gap-6">
+      <a
+        href="#projekter"
+        class="nav-link hidden text-sm font-medium text-white/90 transition-colors hover:text-white sm:inline"
+      >
+        Projekter
+      </a>
+      <a
+        href="#oekosystem"
+        class="nav-link hidden text-sm font-medium text-white/90 transition-colors hover:text-white sm:inline"
+      >
+        Økosystem
+      </a>
+      <a
+        href="https://mercantec.dk"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-cta rounded-full border border-white/30 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+      >
+        mercantec.dk
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const navbar = document.getElementById("navbar");
+  const hero = document.getElementById("hero");
+
+  if (navbar && hero) {
+    const logoLight = navbar.querySelector(".logo-light");
+    const logoDark = navbar.querySelector(".logo-dark");
+    const navLinks = navbar.querySelectorAll(".nav-link");
+    const navCta = navbar.querySelector(".nav-cta");
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const onHero = entry.isIntersecting;
+
+        navbar.classList.toggle("bg-primary/80", onHero);
+        navbar.classList.toggle("border-white/10", onHero);
+        navbar.classList.toggle("bg-white/90", !onHero);
+        navbar.classList.toggle("border-gray-200/60", !onHero);
+
+        logoLight?.classList.toggle("hidden", !onHero);
+        logoDark?.classList.toggle("hidden", onHero);
+
+        navLinks.forEach((link) => {
+          link.classList.toggle("text-white/90", onHero);
+          link.classList.toggle("hover:text-white", onHero);
+          link.classList.toggle("text-text", !onHero);
+          link.classList.toggle("hover:text-primary", !onHero);
+        });
+
+        if (navCta) {
+          navCta.classList.toggle("border-white/30", onHero);
+          navCta.classList.toggle("text-white", onHero);
+          navCta.classList.toggle("hover:bg-white/10", onHero);
+          navCta.classList.toggle("border-primary/30", !onHero);
+          navCta.classList.toggle("text-primary", !onHero);
+          navCta.classList.toggle("hover:bg-primary/5", !onHero);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(hero);
+  }
+</script>

@@ -1,4 +1,5 @@
 ---
+import AuthBar from "./AuthBar.astro";
 ---
 
 <header
@@ -11,7 +12,7 @@
       <img src="/brand/logo-dark.svg" alt="Mercantec" class="hidden h-8 w-auto logo-dark" />
     </a>
 
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4 sm:gap-6">
       <a
         href="#projekter"
         class="nav-link hidden text-sm font-medium text-white/90 transition-colors hover:text-white sm:inline"
@@ -24,11 +25,12 @@
       >
         Økosystem
       </a>
+      <AuthBar />
       <a
         href="https://mercantec.dk"
         target="_blank"
         rel="noopener noreferrer"
-        class="nav-cta rounded-full border border-white/30 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+        class="nav-cta hidden rounded-full border border-white/30 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:inline"
       >
         mercantec.dk
       </a>
@@ -73,6 +75,24 @@
           navCta.classList.toggle("text-primary", !onHero);
           navCta.classList.toggle("hover:bg-primary/5", !onHero);
         }
+
+        document.querySelectorAll(".auth-btn").forEach((btn) => {
+          btn.classList.toggle("bg-white", onHero);
+          btn.classList.toggle("text-primary", onHero);
+          btn.classList.toggle("hover:bg-white/90", onHero);
+          btn.classList.toggle("bg-primary", !onHero);
+          btn.classList.toggle("text-white", !onHero);
+          btn.classList.toggle("hover:bg-primary-dark", !onHero);
+        });
+
+        document.querySelectorAll(".auth-user-btn").forEach((btn) => {
+          btn.classList.toggle("border-white/30", onHero);
+          btn.classList.toggle("text-white", onHero);
+          btn.classList.toggle("hover:bg-white/10", onHero);
+          btn.classList.toggle("border-gray-200", !onHero);
+          btn.classList.toggle("text-text", !onHero);
+          btn.classList.toggle("hover:bg-gray-50", !onHero);
+        });
       },
       { threshold: 0.1 },
     );

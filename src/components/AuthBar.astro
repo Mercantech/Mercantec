@@ -1,0 +1,160 @@
+---
+---
+
+<div id="auth-bar" class="relative flex items-center gap-3">
+  <!-- Guest state -->
+  <div id="auth-guest" class="flex items-center">
+    <button
+      type="button"
+      id="auth-login-btn"
+      class="auth-btn rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-primary transition-colors hover:bg-white/90"
+    >
+      Log ind
+    </button>
+  </div>
+
+  <!-- Logged-in state -->
+  <div id="auth-user" class="hidden items-center gap-3">
+    <button
+      type="button"
+      id="auth-user-toggle"
+      class="auth-user-btn flex max-w-[200px] items-center gap-2 rounded-full border border-white/30 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+      aria-expanded="false"
+      aria-haspopup="true"
+    >
+      <span
+        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-bold"
+        id="auth-avatar"
+      >
+        ?
+      </span>
+      <span id="auth-display-name" class="truncate">Bruger</span>
+    </button>
+
+    <div
+      id="auth-dropdown"
+      class="absolute right-0 top-full z-50 mt-2 hidden w-72 rounded-2xl border border-gray-200/80 bg-white p-4 shadow-xl"
+      role="menu"
+    >
+      <div class="mb-3 border-b border-gray-100 pb-3">
+        <p class="font-heading text-sm font-semibold text-text" id="auth-dd-name">—</p>
+        <p class="text-xs text-muted" id="auth-dd-email">—</p>
+      </div>
+      <dl class="space-y-2 text-xs">
+        <div class="flex justify-between gap-2">
+          <dt class="text-muted">Login-metode</dt>
+          <dd class="font-medium text-text" id="auth-dd-method">—</dd>
+        </div>
+        <div class="flex justify-between gap-2">
+          <dt class="text-muted">Roller</dt>
+          <dd class="text-right font-medium text-text" id="auth-dd-roles">—</dd>
+        </div>
+        <div class="flex justify-between gap-2">
+          <dt class="text-muted">Bruger-ID</dt>
+          <dd class="truncate font-mono text-[10px] text-text" id="auth-dd-sub">—</dd>
+        </div>
+      </dl>
+      <p id="auth-expired-hint" class="mt-3 hidden rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+        JWT er udløbet — log ind igen for et nyt token.
+      </p>
+      <button
+        type="button"
+        id="auth-logout-btn"
+        class="mt-4 w-full rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-text transition-colors hover:bg-gray-50"
+      >
+        Log ud
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import {
+    decodeJwtPayload,
+    getAccessToken,
+    jwtExpired,
+    loginMethodLabel,
+    logout,
+    maskEmail,
+    rolesFromPayload,
+    startLogin,
+  } from "../lib/auth";
+
+  const guestEl = document.getElementById("auth-guest");
+  const userEl = document.getElementById("auth-user");
+  const loginBtn = document.getElementById("auth-login-btn");
+  const logoutBtn = document.getElementById("auth-logout-btn");
+  const userToggle = document.getElementById("auth-user-toggle");
+  const dropdown = document.getElementById("auth-dropdown");
+  const expiredHint = document.getElementById("auth-expired-hint");
+
+  function renderAuthState() {
+    const token = getAccessToken();
+    const payload = token ? decodeJwtPayload(token) : null;
+
+    if (!token || !payload) {
+      guestEl?.classList.remove("hidden");
+      userEl?.classList.add("hidden");
+      userEl?.classList.remove("flex");
+      return;
+    }
+
+    guestEl?.classList.add("hidden");
+    userEl?.classList.remove("hidden");
+    userEl?.classList.add("flex");
+
+    const name = (payload.name as string) || "Bruger";
+    const email = maskEmail(payload.email as string | undefined);
+    const method = loginMethodLabel(payload.login_method as string | undefined);
+    const roles = rolesFromPayload(payload);
+    const rolesText = roles.length ? roles.join(", ") : "Ingen";
+    const initial = name.charAt(0).toUpperCase();
+
+    const avatar = document.getElementById("auth-avatar");
+    const displayName = document.getElementById("auth-display-name");
+    const ddName = document.getElementById("auth-dd-name");
+    const ddEmail = document.getElementById("auth-dd-email");
+    const ddMethod = document.getElementById("auth-dd-method");
+    const ddRoles = document.getElementById("auth-dd-roles");
+    const ddSub = document.getElementById("auth-dd-sub");
+
+    if (avatar) avatar.textContent = initial;
+    if (displayName) displayName.textContent = name;
+    if (ddName) ddName.textContent = name;
+    if (ddEmail) ddEmail.textContent = email;
+    if (ddMethod) ddMethod.textContent = method;
+    if (ddRoles) ddRoles.textContent = rolesText;
+    if (ddSub) ddSub.textContent = (payload.sub as string) || "—";
+
+    const expired = jwtExpired(payload);
+    expiredHint?.classList.toggle("hidden", !expired);
+  }
+
+  loginBtn?.addEventListener("click", () => {
+    startLogin().catch((err) => {
+      alert(err instanceof Error ? err.message : "Login fejlede");
+    });
+  });
+
+  logoutBtn?.addEventListener("click", () => logout());
+
+  userToggle?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = !dropdown?.classList.contains("hidden");
+    dropdown?.classList.toggle("hidden", isOpen);
+    userToggle.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  document.addEventListener("click", () => {
+    dropdown?.classList.add("hidden");
+    userToggle?.setAttribute("aria-expanded", "false");
+  });
+
+  dropdown?.addEventListener("click", (e) => e.stopPropagation());
+
+  renderAuthState();
+  window.addEventListener("mercantec-auth-changed", renderAuthState);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") renderAuthState();
+  });
+</script>

@@ -1,0 +1,67 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Logger ind — Mercantec">
+  <Navbar />
+  <main class="flex min-h-screen items-center justify-center bg-section px-6 pt-24 pb-12">
+    <div class="w-full max-w-md rounded-2xl border border-gray-200/60 bg-white p-8 shadow-lg text-center">
+      <div class="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+        <svg class="h-6 w-6 animate-spin text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+      </div>
+      <h1 class="mb-2 font-heading text-xl font-bold text-text">Logger ind</h1>
+      <p id="callback-status" class="text-sm text-muted">Behandler OAuth-callback…</p>
+      <pre id="callback-error" class="mt-4 hidden overflow-x-auto rounded-lg bg-red-50 p-4 text-left text-xs text-red-800"></pre>
+      <a id="callback-retry" href="/" class="mt-6 hidden inline-block text-sm font-medium text-primary hover:underline">
+        Tilbage til forsiden
+      </a>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { exchangeCode } from "../../lib/auth";
+
+  const statusEl = document.getElementById("callback-status");
+  const errorEl = document.getElementById("callback-error");
+  const retryEl = document.getElementById("callback-retry");
+
+  function showError(message: string) {
+    if (statusEl) statusEl.textContent = "Login fejlede";
+    errorEl?.classList.remove("hidden");
+    if (errorEl) errorEl.textContent = message;
+    retryEl?.classList.remove("hidden");
+  }
+
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+    const errorDesc = params.get("error_description");
+    const code = params.get("code");
+    const state = params.get("state");
+
+    if (error) {
+      showError(`${error}${errorDesc ? ` — ${errorDesc}` : ""}`);
+      return;
+    }
+
+    if (!code || !state) {
+      showError("Manglende code eller state i callback-URL.");
+      return;
+    }
+
+    try {
+      await exchangeCode(code, state);
+      window.dispatchEvent(new Event("mercantec-auth-changed"));
+      window.location.replace("/");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : String(err));
+    }
+  })();
+</script>

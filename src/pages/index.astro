@@ -6,6 +6,10 @@ import ProjectCard from "../components/ProjectCard.astro";
 import EcosystemDiagram from "../components/EcosystemDiagram.astro";
 import Footer from "../components/Footer.astro";
 import { projects } from "../data/projects";
+
+const techFilters = Array.from(
+  new Set(projects.flatMap((p) => p.techStack.map((t) => t.name))),
+).sort((a, b) => a.localeCompare(b, "da"));
 ---
 
 <Layout>
@@ -24,6 +28,30 @@ import { projects } from "../data/projects";
         </p>
       </div>
 
+      <div class="reveal mb-10 flex flex-col items-center gap-4" style="animation-delay: 0.05s">
+        <div class="flex flex-wrap justify-center gap-2" id="tech-filters" aria-label="Filtrér projekter efter teknologi">
+          <button
+            type="button"
+            class="tech-filter-chip tech-filter-chip--active"
+            data-tech="__all__"
+            aria-pressed="true"
+          >
+            Alle
+          </button>
+          {techFilters.map((t) => (
+            <button
+              type="button"
+              class="tech-filter-chip"
+              data-tech={t.toLowerCase()}
+              aria-pressed="false"
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        <p class="text-xs text-muted" id="tech-filter-status" aria-live="polite"></p>
+      </div>
+
       <div class="grid gap-8 lg:grid-cols-2">
         {projects.map((project, i) => (
           <div class="reveal" style={`transition-delay: ${i * 0.1}s`}>
@@ -37,3 +65,130 @@ import { projects } from "../data/projects";
   <EcosystemDiagram />
   <Footer />
 </Layout>
+
+<style is:global>
+  .tech-filter-chip {
+    border: 1px solid rgba(209, 213, 219, 0.9); /* gray-300 */
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-text);
+    padding: 0.45rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition:
+      transform 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      box-shadow 160ms ease;
+  }
+  .tech-filter-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+    border-color: rgba(209, 213, 219, 1);
+  }
+  .tech-filter-chip--active {
+    background: var(--color-primary);
+    color: white;
+    border-color: transparent;
+  }
+  .tech-filter-hidden {
+    display: none !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tech-filter-chip:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+</style>
+
+<script>
+  const filterContainer = document.getElementById("tech-filters");
+  const statusEl = document.getElementById("tech-filter-status");
+
+  const cardWrappers = Array.from(
+    document.querySelectorAll('[data-project-card]'),
+  );
+
+  const chips = filterContainer
+    ? Array.from(filterContainer.querySelectorAll("[data-tech]"))
+    : [];
+
+  const selected = new Set();
+
+  function setChipActive(chip, isActive) {
+    chip.classList.toggle("tech-filter-chip--active", isActive);
+    chip.setAttribute("aria-pressed", String(isActive));
+  }
+
+  function updateAllChip() {
+    const allChip = filterContainer?.querySelector('[data-tech="__all__"]');
+    if (!allChip) return;
+    const isAll = selected.size === 0;
+    setChipActive(allChip, isAll);
+  }
+
+  function applyFilter() {
+    let visibleCount = 0;
+
+    for (const card of cardWrappers) {
+      const tech = (card.getAttribute("data-tech") || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const match =
+        selected.size === 0 ||
+        Array.from(selected).every((t) => tech.includes(t));
+
+      card.classList.toggle("tech-filter-hidden", !match);
+      if (match) visibleCount += 1;
+    }
+
+    updateAllChip();
+
+    if (statusEl) {
+      if (selected.size === 0) {
+        statusEl.textContent = `${visibleCount} projekt(er)`;
+      } else {
+        statusEl.textContent = `${visibleCount} projekt(er) matcher: ${Array.from(selected).join(", ")}`;
+      }
+    }
+  }
+
+  function onChipClick(chip) {
+    const tech = chip.getAttribute("data-tech");
+    if (!tech) return;
+
+    if (tech === "__all__") {
+      selected.clear();
+      chips.forEach((c) => setChipActive(c, c === chip));
+      applyFilter();
+      return;
+    }
+
+    const key = tech;
+    if (selected.has(key)) selected.delete(key);
+    else selected.add(key);
+
+    // "Alle" bliver inaktiv når man vælger noget
+    const allChip = filterContainer?.querySelector('[data-tech="__all__"]');
+    if (allChip) setChipActive(allChip, selected.size === 0);
+
+    // toggle for this chip
+    setChipActive(chip, selected.has(key));
+    applyFilter();
+  }
+
+  if (filterContainer) {
+    filterContainer.addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-tech]");
+      if (!chip) return;
+      onChipClick(chip);
+    });
+
+    // initial status
+    applyFilter();
+  }
+</script>

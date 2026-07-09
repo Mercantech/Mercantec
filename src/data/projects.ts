@@ -70,7 +70,7 @@ export const projects: Project[] = [
     ],
     url: "https://uptimedaddy.mercantec.tech",
     github: "https://github.com/Mercantech/UptimeDaddy",
-    logo: "/projects/uptimedaddy-logo.svg",
+    logo: "/projects/uptimedaddy-logo.png",
     accentColor: "#863bff",
     accentBg: "rgba(134, 59, 255, 0.08)",
     status: "live",

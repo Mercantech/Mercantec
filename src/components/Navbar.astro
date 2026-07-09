@@ -26,14 +26,6 @@ import AuthBar from "./AuthBar.astro";
         Økosystem
       </a>
       <AuthBar />
-      <a
-        href="https://mercantec.dk"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="nav-cta hidden rounded-full border border-white/30 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:inline"
-      >
-        mercantec.dk
-      </a>
     </div>
   </nav>
 </header>
@@ -67,14 +59,7 @@ import AuthBar from "./AuthBar.astro";
           link.classList.toggle("hover:text-primary", !onHero);
         });
 
-        if (navCta) {
-          navCta.classList.toggle("border-white/30", onHero);
-          navCta.classList.toggle("text-white", onHero);
-          navCta.classList.toggle("hover:bg-white/10", onHero);
-          navCta.classList.toggle("border-primary/30", !onHero);
-          navCta.classList.toggle("text-primary", !onHero);
-          navCta.classList.toggle("hover:bg-primary/5", !onHero);
-        }
+        // navCta removed (mercantec.dk button)
 
         document.querySelectorAll(".auth-btn").forEach((btn) => {
           btn.classList.toggle("bg-white", onHero);

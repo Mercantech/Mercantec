@@ -3,6 +3,7 @@ import type { Project } from "../data/projects";
 import TechStack from "./TechStack.astro";
 import PlatformLink from "./PlatformLink.astro";
 import GitHubLink from "./GitHubLink.astro";
+import DevelopedByLink from "./DevelopedByLink.astro";
 
 interface Props {
   project: Project;
@@ -86,8 +87,11 @@ const statusColors = {
 
   <div class="flex flex-wrap items-center gap-3">
     <PlatformLink project={project} />
-    {
-      project.github && <GitHubLink href={project.github} />
-    }
+    {project.github && <GitHubLink href={project.github} />}
+    <DevelopedByLink
+      credits={project.credits}
+      accentColor={project.accentColor}
+      accentBg={project.accentBg}
+    />
   </div>
 </article>

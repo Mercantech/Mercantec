@@ -1,3 +1,6 @@
+import type { ProjectCredits } from "./developers";
+import { UPTIMEDADDY_CREDITS } from "./developers";
+
 export interface TechItem {
   name: string;
   icon: string;
@@ -16,6 +19,7 @@ export interface Project {
   accentColor: string;
   accentBg: string;
   status: "live" | "beta" | "coming-soon";
+  credits?: ProjectCredits;
 }
 
 export const projects: Project[] = [
@@ -74,6 +78,7 @@ export const projects: Project[] = [
     accentColor: "#863bff",
     accentBg: "rgba(134, 59, 255, 0.08)",
     status: "live",
+    credits: UPTIMEDADDY_CREDITS,
   },
   {
     id: "gf2-learn",

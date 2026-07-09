@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import PlatformLink from "../../components/PlatformLink.astro";
 import GitHubLink from "../../components/GitHubLink.astro";
+import DevelopedByLink from "../../components/DevelopedByLink.astro";
 import { projects } from "../../data/projects";
 
 const project = projects.find((item) => item.id === "vba-year-report-web")!;
@@ -40,6 +41,11 @@ const project = projects.find((item) => item.id === "vba-year-report-web")!;
           <div class="flex flex-wrap gap-3">
             <PlatformLink project={project} />
             <GitHubLink href={project.github!} sublabel="Webdelen" />
+            <DevelopedByLink
+              credits={project.credits}
+              accentColor={project.accentColor}
+              accentBg={project.accentBg}
+            />
           </div>
         </div>
 

@@ -1,9 +1,13 @@
-# Dokploy-deploy: docker compose up -d --build
+# Mercantec — Docker Compose
+# Brug: docker compose up -d --build
 #
-# Routing via direkte Cloudflare-tunnel (apex-domæne mercantec.tech):
-#   Tunnel ingress: mercantec.tech → http://localhost:4040
+# Cloudflare Tunnel (samme mønster som mags.dk):
+#   Zero Trust → MAGS-OLC → Published application routes
+#   Hostname: mercantec.tech  →  http://127.0.0.1:4040
 #
-# Ingen Traefik-labels — apex-domænet routes ikke via Dokploy Traefik Host()-rules.
+# Apex-domæner routes IKKE via Dokploy Traefik — kun direkte tunnel til host-port.
+
+name: mercantec
 
 services:
   web:
@@ -15,12 +19,17 @@ services:
         PUBLIC_AUTH_CLIENT_ID: ${PUBLIC_AUTH_CLIENT_ID:-demo}
         PUBLIC_AUTH_ISSUER: ${PUBLIC_AUTH_ISSUER:-https://auth.mercantec.tech}
         PUBLIC_AUTH_AUDIENCE: ${PUBLIC_AUTH_AUDIENCE:-mercantec-apps}
-    restart: unless-stopped
+    container_name: mercantec-web
     ports:
-      - "${FRONTEND_PUBLISH_PORT:-4040}:4040"
+      - "${WEB_PORT:-4040}:4040"
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4040/"]
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s
+
+networks:
+  default:
+    name: mercantec_net

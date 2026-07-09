@@ -35,22 +35,44 @@ docker compose up --build -d
 
 ## Dokploy (produktion)
 
-Routing via **direkte Cloudflare-tunnel** (apex-domænet `mercantec.tech` — ikke Traefik subdomæne-labels):
+Samme mønster som **mags.dk** — direkte Cloudflare Tunnel til host-port (ikke Traefik).
 
-1. Container eksponerer port **4040** på host
-2. Cloudflare tunnel ingress: `mercantec.tech` → `http://localhost:4040`
+### 1. Docker (host-port 4040)
+
+Container eksponerer `4040:4040` på host — som mags marketing på `3000:3000`.
+
+### 2. Cloudflare Tunnel — Published application route
+
+I **Zero Trust → Networks → Tunnels → MAGS-OLC → Published application routes** (samme tunnel som mags.dk), tilføj:
+
+| Felt | Værdi |
+|------|--------|
+| Hostname | `mercantec.tech` |
+| Service | `http://127.0.0.1:4040` |
+
+Det er **denne** skærm (ikke kun DNS → Records). mags.dk virker fordi den har en published route til `127.0.0.1:3000`.
+
+DNS-posten (`mercantec.tech` CNAME → `*.cfargotunnel.com`) oprettes typisk automatisk når du tilføjer hostname i tunnelen.
+
+### 3. Verificér på serveren
+
+```bash
+curl -I http://127.0.0.1:4040
+```
+
+Forventet: `HTTP/1.1 200 OK`
 
 | Felt | Værdi |
 |------|--------|
 | Compose-fil | `docker-compose.yml` |
-| Arbejdsmappe | repo-roden |
 | Deploy-kommando | `docker compose up -d --build` |
 | Host-port | `4040` |
+| Tunnel service | `http://127.0.0.1:4040` |
 
-Miljøvariabler (`.env`):
+Miljøvariabler (`.env` — valgfrit):
 
 ```env
-FRONTEND_PUBLISH_PORT=4040
+WEB_PORT=4040
 PUBLIC_AUTH_CLIENT_ID=demo
 ```
 

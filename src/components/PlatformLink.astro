@@ -1,0 +1,91 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Pick<Project, "id" | "name" | "url" | "logo" | "accentColor" | "accentBg">;
+  class?: string;
+}
+
+const brandParts: Record<
+  string,
+  { before: string; accent: string; markText?: string; font?: string; glowSecondary?: string }
+> = {
+  auth: { before: "Mercantec ", accent: "Auth" },
+  uptimedaddy: { before: "Uptime", accent: "Daddy", glowSecondary: "rgba(134, 59, 255, 0.08)" },
+  "gf2-learn": {
+    before: "GF2",
+    accent: "Learn",
+    markText: "</>",
+    font: '"Plus Jakarta Sans", system-ui, sans-serif',
+    glowSecondary: "rgba(124, 58, 237, 0.06)",
+  },
+  "vba-year-report-web": { before: "VBA — ", accent: "Årsrapport" },
+};
+
+const { project, class: className = "" } = Astro.props;
+const brand = brandParts[project.id];
+const isExternal = /^https?:\/\//i.test(project.url);
+const usesBrandFont = Boolean(brand?.font);
+---
+
+<a
+  href={project.url}
+  target={isExternal ? "_blank" : undefined}
+  rel={isExternal ? "noopener noreferrer" : undefined}
+  class:list={["branded-link", className]}
+  style={`--branded-accent: ${project.accentColor}; --branded-accent-bg: ${project.accentBg}; --branded-glow-secondary: ${brand?.glowSecondary ?? "transparent"};${brand?.font ? ` font-family: ${brand.font};` : ""}`}
+>
+  <span class="branded-link-mark">
+    {
+      brand?.markText ? (
+        <span class="branded-link-mark-text" aria-hidden="true">
+          {brand.markText}
+        </span>
+      ) : (
+        <img src={project.logo} alt="" class="branded-link-mark-logo" loading="lazy" />
+      )
+    }
+  </span>
+  <span class="branded-link-copy">
+    <span class="branded-link-name">
+      {
+        brand ? (
+          <>
+            {brand.before}
+            <span class="branded-link-accent">{brand.accent}</span>
+          </>
+        ) : (
+          project.name
+        )
+      }
+    </span>
+    <span class="branded-link-action">Åbn platform</span>
+  </span>
+  <svg
+    class="branded-link-arrow"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+  </svg>
+</a>
+
+{
+  usesBrandFont && (
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&display=swap"
+    />
+  )
+}
+
+<style is:global>
+  @import "../styles/branded-link.css";
+</style>

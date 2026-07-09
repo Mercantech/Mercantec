@@ -2,7 +2,11 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
-import Gf2LearnPlatformLink from "../../components/Gf2LearnPlatformLink.astro";
+import PlatformLink from "../../components/PlatformLink.astro";
+import GitHubLink from "../../components/GitHubLink.astro";
+import { projects } from "../../data/projects";
+
+const project = projects.find((item) => item.id === "gf2-learn")!;
 ---
 
 <Layout
@@ -32,15 +36,8 @@ import Gf2LearnPlatformLink from "../../components/Gf2LearnPlatformLink.astro";
             </div>
           </div>
           <div class="flex flex-wrap gap-3">
-            <Gf2LearnPlatformLink />
-            <a
-              href="https://github.com/Mercantech/GF2-Learn"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-text transition-colors hover:border-gray-300 hover:bg-gray-50"
-            >
-              GitHub
-            </a>
+            <PlatformLink project={project} />
+            <GitHubLink href={project.github!} />
           </div>
         </div>
 

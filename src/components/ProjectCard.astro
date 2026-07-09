@@ -1,14 +1,14 @@
 ---
 import type { Project } from "../data/projects";
 import TechStack from "./TechStack.astro";
-import Gf2LearnPlatformLink from "./Gf2LearnPlatformLink.astro";
+import PlatformLink from "./PlatformLink.astro";
+import GitHubLink from "./GitHubLink.astro";
 
 interface Props {
   project: Project;
 }
 
 const { project } = Astro.props;
-const isExternalUrl = /^https?:\/\//i.test(project.url);
 
 const statusLabels = {
   live: "Live",
@@ -85,34 +85,9 @@ const statusColors = {
   </div>
 
   <div class="flex flex-wrap items-center gap-3">
+    <PlatformLink project={project} />
     {
-      project.id === "gf2-learn" ? (
-        <Gf2LearnPlatformLink href={project.url} />
-      ) : (
-        <a
-          href={project.url}
-          target={isExternalUrl ? "_blank" : undefined}
-          rel={isExternalUrl ? "noopener noreferrer" : undefined}
-          class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
-        >
-          Åbn platform
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </a>
-      )
-    }
-    {
-      project.github && (
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-5 py-2.5 text-sm font-medium text-text transition-colors hover:border-gray-300 hover:bg-gray-50"
-        >
-          GitHub
-        </a>
-      )
+      project.github && <GitHubLink href={project.github} />
     }
   </div>
 </article>

@@ -16,11 +16,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         var stringListConverter = new ValueConverter<List<string>, string>(
             v => JsonSerializer.Serialize(v, jsonOptions),
-            v => JsonSerializer.Deserialize<List<string>>(v, jsonOptions) ?? []);
+            v => JsonSerializer.Deserialize<List<string>>(v, jsonOptions) ?? new List<string>());
 
         var techStackConverter = new ValueConverter<List<TechStackItem>, string>(
             v => JsonSerializer.Serialize(v, jsonOptions),
-            v => JsonSerializer.Deserialize<List<TechStackItem>>(v, jsonOptions) ?? []);
+            v => JsonSerializer.Deserialize<List<TechStackItem>>(v, jsonOptions) ?? new List<TechStackItem>());
 
         modelBuilder.Entity<StudentProject>(entity =>
         {

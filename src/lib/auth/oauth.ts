@@ -1,4 +1,4 @@
-import { getAuthConfig, getRedirectUri, getSiteOrigin, getTokenEndpoint } from "./config";
+import { getAuthConfig, getRedirectUri, getSiteOrigin, getTokenEndpoint, redirectIfInternalPort } from "./config";
 import {
   buildAuthorizeUrl,
   randomVerifier,
@@ -47,14 +47,13 @@ async function postToken(body: URLSearchParams): Promise<TokenResponse> {
 }
 
 export async function startLogin(): Promise<void> {
-  if (typeof window !== "undefined") {
-    const { hostname, port, protocol } = window.location;
-    const onInternalMercantecPort =
-      hostname === "mercantec.tech" && port === "4040" && protocol === "http:";
-    if (onInternalMercantecPort) {
-      window.location.assign("https://mercantec.tech/");
-      return;
-    }
+  redirectIfInternalPort();
+  if (
+    typeof window !== "undefined" &&
+    window.location.hostname === "mercantec.tech" &&
+    window.location.port === "4040"
+  ) {
+    return;
   }
 
   const cfg = getAuthConfig();

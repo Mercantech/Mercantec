@@ -29,6 +29,10 @@ const {
   <body>
     <slot />
     <script>
+      import { redirectIfInternalPort } from "../lib/auth";
+
+      redirectIfInternalPort();
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {

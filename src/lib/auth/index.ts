@@ -1,4 +1,4 @@
-export { getAuthConfig, getRedirectUri, getSiteOrigin, getTokenEndpoint } from "./config";
+export { getAuthConfig, getRedirectUri, getSiteOrigin, getTokenEndpoint, redirectIfInternalPort } from "./config";
 export type { AuthConfig } from "./config";
 export { mercantecFetch } from "./fetch";
 export type { MercantecFetchInit } from "./fetch";

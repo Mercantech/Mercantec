@@ -1,4 +1,5 @@
 import { mercantecFetch } from "./auth/fetch";
+import { getSiteOrigin } from "./auth/config";
 
 function getApiBase(): string {
   const configured = import.meta.env.PUBLIC_STUDENTS_API_URL as string | undefined;
@@ -8,7 +9,7 @@ function getApiBase(): string {
   }
 
   if (typeof window !== "undefined") {
-    return window.location.origin;
+    return getSiteOrigin();
   }
 
   return "";

@@ -118,23 +118,15 @@ const statusColors = {
 
   .project-card-actions {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: stretch;
     gap: 0.5rem;
-    min-height: 3rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    -webkit-overflow-scrolling: touch;
+    min-height: 3.35rem;
   }
 
-  .project-card-actions::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .project-card-actions::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: rgba(148, 163, 184, 0.55);
+  .project-card-actions > :global(.branded-link--compact:not(.developed-by-team):not(.developed-by-duo)) {
+    flex: 1 1 0;
+    min-width: 0;
   }
 </style>
-
+

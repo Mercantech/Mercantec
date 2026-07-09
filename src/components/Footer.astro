@@ -1,55 +1,135 @@
 ---
+import { projects } from "../data/projects";
+
 const year = new Date().getFullYear();
+const liveProjects = projects.filter((project) => project.status !== "coming-soon" && project.url);
+
+const navLinks = [
+  { href: "/#projekter", label: "Projekter" },
+  { href: "/#oekosystem", label: "Økosystem" },
+];
+
+const orgLinks = [
+  { href: "https://mercantec.dk", label: "mercantec.dk" },
+  { href: "https://github.com/Mercantech", label: "Mercantech på GitHub" },
+];
 ---
 
-<footer class="bg-footer px-6 py-12">
-  <div class="mx-auto flex max-w-6xl flex-col items-center gap-8 sm:flex-row sm:justify-between">
-    <div class="flex flex-col items-center gap-4 sm:items-start">
-      <a href="/" aria-label="Mercantec forside">
-        <img src="/brand/logo-dark.svg" alt="Mercantec" class="h-8 w-auto" />
-      </a>
-      <p class="text-sm text-muted">Flere projekter kommer snart.</p>
-    </div>
-
-    <div class="flex flex-wrap items-center justify-center gap-6">
-      <a
-        href="https://mercantec.dk"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm font-medium text-text transition-colors hover:text-primary"
-      >
-        mercantec.dk
-      </a>
-      <a
-        href="https://github.com/Mercantech"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm font-medium text-text transition-colors hover:text-primary"
-      >
-        GitHub
-      </a>
-      <a
-        href="https://auth.mercantec.tech"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm font-medium text-text transition-colors hover:text-primary"
-      >
-        Auth
-      </a>
-      <a
-        href="https://uptimedaddy.mercantec.tech"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm font-medium text-text transition-colors hover:text-primary"
-      >
-        UptimeDaddy
-      </a>
-    </div>
+<footer class="footer relative overflow-hidden text-white">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-[#061e5c]"></div>
+    <div class="absolute -top-1/4 -right-1/4 h-[420px] w-[420px] rounded-full bg-primary-light/15 blur-3xl"></div>
+    <div class="absolute -bottom-1/3 -left-1/4 h-[360px] w-[360px] rounded-full bg-[#1a56db]/10 blur-3xl"></div>
   </div>
 
-  <div class="mx-auto mt-8 max-w-6xl border-t border-gray-300/50 pt-6 text-center">
-    <p class="text-xs text-muted">
-      &copy; {year} Mercantec — platforme bygget af elever
-    </p>
+  <div class="footer-cut pointer-events-none absolute top-0 right-0 left-0" aria-hidden="true">
+    <svg
+      viewBox="0 0 1440 80"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="block h-12 w-full sm:h-16"
+      preserveAspectRatio="none"
+    >
+      <path d="M0 0L1440 80V0H0Z" fill="#ffffff"></path>
+    </svg>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-6xl px-6 pt-20 pb-10">
+    <div class="footer-grid mb-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      <div class="sm:col-span-2 lg:col-span-1">
+        <a href="/" class="inline-flex items-center gap-3" aria-label="Mercantec forside">
+          <img src="/brand/logo.svg" alt="Mercantec" class="h-8 w-auto" loading="lazy" />
+        </a>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/75">
+          Central indgang til Mercantecs digitale platforme — fra fælles login til elevbyggede
+          projekter og værktøjer på tværs af skolen.
+        </p>
+        <p class="mt-4 font-heading text-sm font-semibold tracking-wide text-white/90">
+          mercantec.tech
+        </p>
+      </div>
+
+      <div>
+        <h2 class="footer-heading">Navigation</h2>
+        <ul class="footer-links">
+          {
+            navLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-heading">Platformer</h2>
+        <ul class="footer-links">
+          {
+            liveProjects.map((project) => (
+              <li>
+                <a href={project.url} target="_blank" rel="noopener noreferrer">
+                  {project.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-heading">Mercantec</h2>
+        <ul class="footer-links">
+          {
+            orgLinks.map((link) => (
+              <li>
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-center sm:flex-row sm:text-left">
+      <p class="text-xs text-white/55">
+        &copy; {year} Mercantec — platforme bygget af elever og undervisere
+      </p>
+      <p class="text-xs text-white/45">
+        Del af Mercantec-økosystemet med central login via Mercantec Auth
+      </p>
+    </div>
   </div>
 </footer>
+
+<style>
+  .footer-heading {
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .footer-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .footer-links a:hover {
+    color: #ffffff;
+  }
+</style>

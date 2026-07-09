@@ -160,3 +160,19 @@
 .branded-link--compact .developed-by-mark {
   font-size: 0.72rem;
 }
+
+.branded-link--compact.developed-by-team,
+.branded-link--compact.developed-by-duo {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+.branded-link--compact.developed-by-team .branded-link-name,
+.branded-link--compact.developed-by-duo .branded-link-name {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}

@@ -78,6 +78,7 @@ const groupLinks = credits.developers.flatMap((dev) => developerLinks(dev));
       rel="noopener noreferrer"
       class:list={["branded-link", "developed-by-team", compact && "branded-link--compact", className]}
       style={style}
+      title={compact ? `${teamDisplayName} — ${teamSublabel}` : undefined}
     >
       <span class="branded-link-mark" aria-hidden="true">
         <svg
@@ -99,10 +100,10 @@ const groupLinks = credits.developers.flatMap((dev) => developerLinks(dev));
         <span class:list={["branded-link-action", compact && "branded-link-action--hide-compact"]}>
           Udviklet af
         </span>
-        <span class="branded-link-name">
+        <span class="branded-link-name branded-link-name--team">
           {teamDisplayName}
         </span>
-        <span class="branded-link-action">{teamSublabel}</span>
+        {!compact && <span class="branded-link-action">{teamSublabel}</span>}
       </span>
       <svg
         class="branded-link-arrow"
@@ -145,7 +146,7 @@ const groupLinks = credits.developers.flatMap((dev) => developerLinks(dev));
         <span class:list={["branded-link-action", compact && "branded-link-action--hide-compact"]}>
           Udviklet af
         </span>
-        <span class="branded-link-name">{duoDisplayName}</span>
+        <span class="branded-link-name branded-link-name--team">{duoDisplayName}</span>
         <span class="developed-by-links">
           {
             groupLinks.flatMap((link, index) => {
@@ -242,21 +243,5 @@ const groupLinks = credits.developers.flatMap((dev) => developerLinks(dev));
     box-shadow:
       0 4px 14px color-mix(in srgb, var(--branded-accent) 20%, transparent),
       0 8px 24px color-mix(in srgb, var(--branded-accent) 12%, transparent);
-  }
-
-  :global(.branded-link--compact.developed-by-team),
-  :global(.branded-link--compact.developed-by-duo) {
-    flex: 1.35 1 0;
-  }
-
-  :global(.branded-link--compact.developed-by-team .branded-link-name),
-  :global(.branded-link--compact.developed-by-duo .branded-link-name) {
-    white-space: normal;
-    line-height: 1.15;
-    font-size: 0.64rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 </style>

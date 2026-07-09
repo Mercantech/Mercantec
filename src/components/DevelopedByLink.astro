@@ -2,6 +2,7 @@
 import {
   DEFAULT_CREDITS,
   MAGS,
+  type DeveloperCredit,
   type ProjectCredits,
 } from "../data/developers";
 
@@ -22,12 +23,51 @@ const {
 } = Astro.props;
 
 const isTeam = credits.developers.length > 1;
+const isSoloMags =
+  credits.developers.length === 1 && credits.developers[0]?.name === MAGS.name;
 const mags = credits.developers.find((dev) => dev.name === MAGS.name);
 const h5Team = credits.developers.filter((dev) => dev.name !== MAGS.name);
 const teamNames = h5Team.map((dev) => dev.name).join(" · ");
 const teamDisplayName = `${teamNames}${mags ? ` + ${mags.name}` : ""}`;
+const duoDisplayName = credits.developers.map((dev) => dev.name).join(" · ");
 const teamSublabel = compact ? "Holdet" : (credits.moreLabel ?? "Se holdet");
 const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg}; --branded-glow-secondary: color-mix(in srgb, ${accentColor} 6%, transparent);`;
+
+type CreditLink = { href: string; label: string };
+
+function websiteLabel(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
+function linkLabel(dev: DeveloperCredit): string {
+  if (dev.name === MAGS.name) {
+    return compact ? "GH" : "GitHub";
+  }
+  return compact ? dev.name : `${dev.name} GitHub`;
+}
+
+function developerLinks(dev: DeveloperCredit): CreditLink[] {
+  if (compact) {
+    if (dev.name === MAGS.name) {
+      const links: CreditLink[] = [];
+      if (dev.website) links.push({ href: dev.website, label: "mags.dk" });
+      if (dev.github) links.push({ href: dev.github, label: "GH" });
+      return links;
+    }
+    return dev.github ? [{ href: dev.github, label: dev.name }] : [];
+  }
+
+  const links: CreditLink[] = [];
+  if (dev.website) links.push({ href: dev.website, label: websiteLabel(dev.website) });
+  if (dev.github) links.push({ href: dev.github, label: linkLabel(dev) });
+  return links;
+}
+
+const groupLinks = credits.developers.flatMap((dev) => developerLinks(dev));
 ---
 
 {
@@ -80,7 +120,51 @@ const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg
         />
       </svg>
     </a>
-  ) : (
+  ) : isTeam ? (
+    <div
+      class:list={["branded-link", "developed-by", "developed-by-duo", compact && "branded-link--compact", className]}
+      style={style}
+    >
+      <span class="branded-link-mark" aria-hidden="true">
+        <svg
+          class="developed-by-team-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      </span>
+      <span class="branded-link-copy">
+        <span class:list={["branded-link-action", compact && "branded-link-action--hide-compact"]}>
+          Udviklet af
+        </span>
+        <span class="branded-link-name">{duoDisplayName}</span>
+        <span class="developed-by-links">
+          {
+            groupLinks.flatMap((link, index) => {
+              const items = [];
+              if (index > 0) {
+                items.push(<span class="developed-by-sep" aria-hidden="true">·</span>);
+              }
+              items.push(
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>,
+              );
+              return items;
+            })
+          }
+        </span>
+      </span>
+    </div>
+  ) : isSoloMags ? (
     <div class:list={["branded-link", "developed-by", compact && "branded-link--compact", className]} style={style}>
       <span class="branded-link-mark developed-by-mark" aria-hidden="true">M</span>
       <span class="branded-link-copy">
@@ -109,7 +193,7 @@ const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg
         </span>
       </span>
     </div>
-  )
+  ) : null
 }
 
 <style is:global>
@@ -151,7 +235,8 @@ const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg
     color: #94a3b8;
   }
 
-  .developed-by:hover {
+  .developed-by:hover,
+  .developed-by-duo:hover {
     transform: translateY(-1px);
     border-color: color-mix(in srgb, var(--branded-accent) 35%, transparent);
     box-shadow:
@@ -159,14 +244,16 @@ const style = `--branded-accent: ${accentColor}; --branded-accent-bg: ${accentBg
       0 8px 24px color-mix(in srgb, var(--branded-accent) 12%, transparent);
   }
 
-  :global(.branded-link--compact.developed-by-team) {
+  :global(.branded-link--compact.developed-by-team),
+  :global(.branded-link--compact.developed-by-duo) {
     flex: 1.35 1 0;
   }
 
-  :global(.branded-link--compact.developed-by-team .branded-link-name) {
+  :global(.branded-link--compact.developed-by-team .branded-link-name),
+  :global(.branded-link--compact.developed-by-duo .branded-link-name) {
     white-space: normal;
     line-height: 1.15;
-    font-size: 0.68rem;
+    font-size: 0.64rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

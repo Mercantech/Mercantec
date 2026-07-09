@@ -1,5 +1,5 @@
 import type { ProjectCredits } from "./developers";
-import { UPTIMEDADDY_CREDITS } from "./developers";
+import { GUESTBOOK_CREDITS, SKILLS_CREDITS, UPTIMEDADDY_CREDITS } from "./developers";
 
 export interface TechItem {
   name: string;
@@ -107,6 +107,58 @@ export const projects: Project[] = [
     status: "live",
   },
   {
+    id: "skills",
+    name: "Mercantec Skills",
+    tagline: "Konkurrencer, point og publikumsstemmer — samlet ét sted",
+    description:
+      "Hub til Mercantec Skills-konkurrencer med årgangs-forside. 2026-udgaven er Kryds & Bolle-linkbanken, hvor elever indsender hostede spil, får tjeklistepoint og publikumspriser — med delt tilstand i PostgreSQL på tværs af enheder.",
+    features: [
+      "Årgangs-forside med aktiv 2026 Kryds & Bolle-konkurrence",
+      "Linkbank til elevernes hostede spil (URL, hold, billede)",
+      "Tjeklistepoint for krav, hosting, multiplayer og ekstra features",
+      "Publikumsafstemning med leaderboard og samlet pointtavle",
+      "Delt state i PostgreSQL (JSONB) — synk på tværs af enheder",
+    ],
+    techStack: [
+      { name: "Node.js", icon: "/tech/nodejs.svg" },
+      { name: "Express", icon: "/tech/express.svg" },
+      { name: "PostgreSQL", icon: "/tech/postgresql.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+    ],
+    url: "https://skills.mercantec.tech",
+    github: "https://github.com/Mercantech/Skills",
+    logo: "/projects/skills-logo.svg",
+    accentColor: "#f8c400",
+    accentBg: "rgba(248, 196, 0, 0.12)",
+    status: "live",
+    credits: SKILLS_CREDITS,
+  },
+  {
+    id: "mercan-guestbook",
+    name: "MercanGuestBook",
+    tagline: "Mercantecs GitHub-gæstebog — én signatur per elev",
+    description:
+      "Kollektiv gæstebog hvor elever bidrager via fork og pull request. Hver entry er en markdown-fil med GitHub-profil, website og citat — CI validerer og genererer README med alle signaturer sorteret efter commit-tid.",
+    features: [
+      "Fork → PR-workflow med 3 elev-godkendelser før merge",
+      "Én entry-fil per elev i entries/ (GitHub, website, citat)",
+      "GitHub Actions validerer format og auto-genererer README",
+      "Gæstebogstabel med links til profiler og personlige sider",
+    ],
+    techStack: [
+      { name: "GitHub", icon: "/tech/github.svg" },
+      { name: "Python", icon: "/tech/python.svg" },
+      { name: "Markdown", icon: "/tech/markdown.svg" },
+    ],
+    url: "https://github.com/Mercantech/MercanGuestBook",
+    github: "https://github.com/Mercantech/MercanGuestBook",
+    logo: "/projects/mercan-guestbook-logo.svg",
+    accentColor: "#0e38ab",
+    accentBg: "rgba(14, 56, 171, 0.10)",
+    status: "live",
+    credits: GUESTBOOK_CREDITS,
+  },
+  {
     id: "vba-year-report-web",
     name: "VBA — Årsrapport (web)",
     tagline: "Årsrapport fra Outlook via Microsoft Graph",
@@ -146,6 +198,7 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "auth", name: "Mercantec Auth", role: "hub", url: "https://auth.mercantec.tech" },
   { id: "uptimedaddy", name: "UptimeDaddy", role: "client", url: "https://uptimedaddy.mercantec.tech" },
   { id: "gf2learn", name: "GF2 Learn", role: "client", url: "https://learn.mags.dk" },
+  { id: "skills", name: "Mercantec Skills", role: "client", url: "https://skills.mercantec.tech" },
   { id: "videnstjek", name: "Videnstjek", role: "client" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

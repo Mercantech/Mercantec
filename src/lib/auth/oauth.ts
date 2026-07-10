@@ -47,7 +47,13 @@ async function postToken(body: URLSearchParams): Promise<TokenResponse> {
 }
 
 export async function startLogin(): Promise<void> {
-  redirectIfInternalPort();
+  if (redirectIfInternalPort()) return;
+
+  try {
+    sessionStorage.setItem("mercantec_auth_return", window.location.pathname + window.location.search);
+  } catch {
+    // ignore
+  }
 
   const cfg = getAuthConfig();
   const redirectUri = getRedirectUri();

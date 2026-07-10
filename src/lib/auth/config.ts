@@ -61,23 +61,30 @@ export function getSiteOrigin(): string {
 }
 
 /** Redirect fra intern host-port (fx :4040) til offentlig HTTPS-URL. */
-export function redirectIfInternalPort(): void {
-  if (typeof window === "undefined") return;
+export function redirectIfInternalPort(): boolean {
+  if (typeof window === "undefined") return false;
 
   const { hostname, port, protocol, pathname, search, hash } = window.location;
   const onInternalPort =
     isMercantecHost(hostname) && port === "4040" && protocol.startsWith("http");
 
   if (onInternalPort) {
-    window.location.replace(`https://${hostname}${pathname}${search}${hash}`);
+    const path = pathname.replace(/\/+$/, "") || "/";
+    window.location.replace(`https://${hostname}${path}${search}${hash}`);
+    return true;
   }
+
+  return false;
 }
 
 export function getRedirectUri(): string {
   return `${getSiteOrigin()}/auth/callback`;
 }
 
-/** Token-proxy på offentlig origin — undgår :4040 i URL. */
+/** Same-origin token-proxy (nginx/Vite → auth.mercantec.tech). */
 export function getTokenEndpoint(): string {
+  if (typeof window !== "undefined") {
+    return `${window.location.origin}/api/oauth/token`;
+  }
   return `${getSiteOrigin()}/api/oauth/token`;
 }

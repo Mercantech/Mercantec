@@ -31,9 +31,10 @@ const {
         var loc = window.location;
         var host = loc.hostname;
         var isMercantec =
-          host === "mercantec.tech" || host.length > 14 && host.slice(-14) === ".mercantec.tech";
+          host === "mercantec.tech" || (host.length > 14 && host.slice(-14) === ".mercantec.tech");
         if (isMercantec && loc.port === "4040") {
-          loc.replace("https://" + host + loc.pathname + loc.search + loc.hash);
+          var path = loc.pathname.replace(/\/+$/, "") || "/";
+          loc.replace("https://" + host + path + loc.search + loc.hash);
         }
       })();
     </script>
@@ -43,7 +44,9 @@ const {
     <script>
       import { getSiteOrigin, redirectIfInternalPort } from "../lib/auth";
 
-      redirectIfInternalPort();
+      if (redirectIfInternalPort()) {
+        // Afventer redirect til offentlig HTTPS-URL
+      } else {
 
       function fixInternalLinks() {
         const origin = getSiteOrigin();
@@ -98,6 +101,7 @@ const {
       );
 
       document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+      }
     </script>
   </body>
 </html>

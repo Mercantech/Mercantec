@@ -94,11 +94,11 @@ Siden integrerer med [Mercantec Auth](https://auth.mercantec.tech) via OAuth 2.0
 | Redirect URI (lokal dev) | `http://localhost:4321/auth/callback` |
 | CORS (`Cors:SpaOrigins`) | `https://mercantec.tech` — kun nødvendig uden token-proxy |
 
-**Bemærk:** Port `4040` er kun intern (Docker/tunnel). Login testes via **https://mercantec.tech** — ikke `http://mercantec.tech:4040`.
+**Bemærk:** Port `4040` er kun intern (Docker/tunnel). Login testes via **https://mercantec.tech** — aldrig `http://mercantec.tech:4040`. Hvis auth sender dig til `:4040`, skal den redirect-URI fjernes i auth-databasen (kun `https://mercantec.tech/auth/callback` må stå). Auth API har en seeder der retter dette ved næste deploy.
 
 **Token-proxy:** Browseren kalder `POST /api/oauth/token` på samme origin (nginx/Vite proxy → auth.mercantec.tech). Det undgår CORS-problemer.
 
-Efter ændringer i auth-kode eller nginx: `docker compose up -d --build`
+Efter ændringer: `docker compose up -d --build` (mercantec.tech) og genstart auth API hvis redirect-URI skal opdateres i databasen.
 
 Kontakt: mags@mercantec.dk
 

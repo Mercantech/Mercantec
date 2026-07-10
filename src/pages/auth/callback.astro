@@ -27,7 +27,7 @@ import { publicPath } from "../../lib/site-url";
 </Layout>
 
 <script>
-  import { exchangeCode, getSiteOrigin } from "../../lib/auth";
+  import { exchangeCode, getSiteOrigin, redirectIfInternalPort } from "../../lib/auth";
 
   const statusEl = document.getElementById("callback-status");
   const errorEl = document.getElementById("callback-error");
@@ -43,6 +43,8 @@ import { publicPath } from "../../lib/site-url";
   }
 
   (async () => {
+    if (redirectIfInternalPort()) return;
+
     const siteOrigin = getSiteOrigin();
 
     // Normalisér trailing slash så redirect_uri matcher authorize-kaldet

@@ -259,6 +259,33 @@ export const projects: Project[] = [
     accentBg: "rgba(44, 62, 80, 0.10)",
     status: "live",
   },
+  {
+    id: "h1-powershell",
+    name: "H1 PowerShell",
+    tagline: "Interaktiv læring til Serverautomatisering I",
+    description:
+      "Læringsside til PowerShell på H1 IT / Infrastruktur og Cyber (fag 16862). Dækker cmdlets, pipeline, variabler, sikker scripting, fjernadministration, WBEM/CIM og datahåndtering — med Monaco-øvelser, præsentationstilstand og AI-feedback.",
+    features: [
+      "Dag 1 og 2 med pensum, quizzer og lokale opgaver",
+      "Monaco-editor til interaktive PowerShell-øvelser",
+      "Præsentationstilstand (F5) med ~70 auto-genererede slides",
+      "Projektkobling, ordbog og Intune-modul til praktik/job",
+    ],
+    techStack: [
+      { name: "React", icon: "/tech/react.svg" },
+      { name: "Vite", icon: "/tech/vite.svg" },
+      { name: "Node.js", icon: "/tech/nodejs.svg" },
+      { name: "Express", icon: "/tech/express.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: "PowerShell", icon: "/tech/powershell.svg" },
+    ],
+    url: "https://powershell.mercantec.tech",
+    github: "https://github.com/Mercantech/H1IT-Powershell",
+    logo: "/projects/h1-powershell-logo.svg",
+    accentColor: "#5ea8ff",
+    accentBg: "rgba(94, 168, 255, 0.12)",
+    status: "live",
+  },
 ];
 
 export interface EcosystemNode {
@@ -276,5 +303,6 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "dhrooms", name: "DH-Rooms", role: "client", url: "https://rooms.mercantec.tech" },
   { id: "videnstjek", name: "Videnstjek", role: "client", url: "https://videnstjek.mags.dk" },
   { id: "banko", name: "Banko", role: "client", url: "https://mercantech.github.io/Banko/" },
+  { id: "h1powershell", name: "H1 PowerShell", role: "client", url: "https://powershell.mercantec.tech" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

@@ -15,6 +15,7 @@ export const TECH_CATALOG: { name: string; icon: string }[] = [
   { name: "Node.js", icon: "/tech/nodejs.svg" },
   { name: "OAuth 2.0", icon: "/tech/oauth.svg" },
   { name: "PostgreSQL", icon: "/tech/postgresql.svg" },
+  { name: "PowerShell", icon: "/tech/powershell.svg" },
   { name: "Python", icon: "/tech/python.svg" },
   { name: "React", icon: "/tech/react.svg" },
   { name: "Ruby", icon: "/tech/ruby.svg" },

@@ -47,11 +47,35 @@ const {
 
       function fixInternalLinks() {
         const origin = getSiteOrigin();
-        if (origin === window.location.origin) return;
+        const onMercantec =
+          location.hostname === "mercantec.tech" ||
+          location.hostname.endsWith(".mercantec.tech");
 
-        document.querySelectorAll('a[href^="/"]').forEach((el) => {
+        document.querySelectorAll("a[href]").forEach((el) => {
           const href = el.getAttribute("href");
-          if (href) el.setAttribute("href", `${origin}${href}`);
+          if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+            return;
+          }
+
+          if (href.startsWith("/")) {
+            if (onMercantec || origin !== window.location.origin) {
+              el.setAttribute("href", `${origin}${href}`);
+            }
+            return;
+          }
+
+          try {
+            const url = new URL(href, window.location.href);
+            const mercantec =
+              url.hostname === "mercantec.tech" || url.hostname.endsWith(".mercantec.tech");
+            if (!mercantec) return;
+
+            if (url.port === "4040" || url.protocol === "http:") {
+              el.setAttribute("href", `${origin}${url.pathname}${url.search}${url.hash}`);
+            }
+          } catch {
+            // ignore invalid URLs
+          }
         });
       }
 

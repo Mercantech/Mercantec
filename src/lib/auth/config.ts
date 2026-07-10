@@ -1,3 +1,9 @@
+import {
+  getCanonicalSiteOrigin,
+  isMercantecHost,
+  sanitizePublicOrigin,
+} from "../site-url";
+
 export interface AuthConfig {
   authBaseUrl: string;
   clientId: string;
@@ -21,10 +27,6 @@ function isLocalDevHost(hostname: string): boolean {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
-function isMercantecHost(hostname: string): boolean {
-  return hostname === "mercantec.tech" || hostname.endsWith(".mercantec.tech");
-}
-
 declare global {
   interface Window {
     /** Sat af /site-origin.js ved container-start (runtime env). */
@@ -32,13 +34,9 @@ declare global {
   }
 }
 
-function normalizeOrigin(origin: string): string {
-  return origin.replace(/\/$/, "");
-}
-
 function configuredSiteOrigin(): string | undefined {
   const fromEnv = import.meta.env.PUBLIC_SITE_URL as string | undefined;
-  return fromEnv?.trim() ? normalizeOrigin(fromEnv) : undefined;
+  return fromEnv?.trim() ? fromEnv.trim() : undefined;
 }
 
 /**
@@ -47,22 +45,19 @@ function configuredSiteOrigin(): string | undefined {
  */
 export function getSiteOrigin(): string {
   if (typeof window !== "undefined") {
-    const runtime = window.__MERCANTEC_SITE_ORIGIN__?.trim();
-    if (runtime) {
-      return normalizeOrigin(runtime);
-    }
-
     const { hostname } = window.location;
-    if (isMercantecHost(hostname)) {
-      return `https://${hostname}`;
-    }
+    const canonical = getCanonicalSiteOrigin(hostname);
+    if (canonical) return canonical;
+
+    const runtime = window.__MERCANTEC_SITE_ORIGIN__?.trim();
+    if (runtime) return sanitizePublicOrigin(runtime, hostname);
 
     if (isLocalDevHost(hostname)) {
       return window.location.origin;
     }
   }
 
-  return configuredSiteOrigin() ?? "https://mercantec.tech";
+  return sanitizePublicOrigin(configuredSiteOrigin() ?? "https://mercantec.tech");
 }
 
 /** Redirect fra intern host-port (fx :4040) til offentlig HTTPS-URL. */

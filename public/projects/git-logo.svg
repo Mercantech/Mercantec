@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 97" role="img" aria-label="Git">
+  <g transform="translate(48.5 48.5)">
+    <g transform="rotate(-45)">
+      <rect x="-38" y="-38" width="76" height="76" rx="11" fill="#F05032"/>
+    </g>
+  </g>
+  <g fill="none" stroke="#000" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="48.5" y1="63.5" x2="48.5" y2="53.5"/>
+    <line x1="48.5" y1="43.5" x2="63" y2="33"/>
+    <line x1="48.5" y1="43.5" x2="35" y2="31"/>
+  </g>
+  <g fill="#000">
+    <circle cx="48.5" cy="68.5" r="5.5"/>
+    <circle cx="48.5" cy="48.5" r="5.5"/>
+    <circle cx="66.5" cy="29.5" r="5.5"/>
+  </g>
+</svg>

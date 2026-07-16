@@ -1,6 +1,7 @@
 /** Kanonisk tech-liste med ikoner — bruges til filtre og som reference for projekter. */
 export const TECH_CATALOG: { name: string; icon: string }[] = [
   { name: ".NET", icon: "/tech/dotnet.svg" },
+  { name: "Astro", icon: "/tech/astro.svg" },
   { name: "Azure", icon: "/tech/azure.png" },
   { name: "Blazor", icon: "/tech/blazor.svg" },
   { name: "Docker", icon: "/tech/docker.svg" },

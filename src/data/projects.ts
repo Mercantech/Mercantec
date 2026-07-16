@@ -286,6 +286,31 @@ export const projects: Project[] = [
     accentBg: "rgba(94, 168, 255, 0.12)",
     status: "live",
   },
+  {
+    id: "git",
+    name: "Git & GitHub",
+    tagline: "Interaktiv introduktion til version control",
+    description:
+      "Læringsplatform til Git og GitHub: commits, branches, pull requests, merge, issues og releases — med visuelle flow-diagrammer, trin-for-trin guides, mini-quizzer og praktiske værktøjer direkte i browseren.",
+    features: [
+      "Emner: commits, branches, PR, merge, issues og releases",
+      "Interaktive Git-grafvisualiseringer trin for trin",
+      "Mini-quizzer og værktøjer (commit-beskeder, konflikter, SemVer)",
+      "Statisk Astro-site hostet på git.mercantec.tech",
+    ],
+    techStack: [
+      { name: "Astro", icon: "/tech/astro.svg" },
+      { name: "React", icon: "/tech/react.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: "GitHub", icon: "/tech/github.svg" },
+    ],
+    url: "https://git.mercantec.tech",
+    github: "https://github.com/Mercantech/Git",
+    logo: "/projects/git-logo.svg",
+    accentColor: "#f05032",
+    accentBg: "rgba(240, 80, 50, 0.10)",
+    status: "live",
+  },
 ];
 
 export interface EcosystemNode {
@@ -304,5 +329,6 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "videnstjek", name: "Videnstjek", role: "client", url: "https://videnstjek.mags.dk" },
   { id: "banko", name: "Banko", role: "client", url: "https://mercantech.github.io/Banko/" },
   { id: "h1powershell", name: "H1 PowerShell", role: "client", url: "https://powershell.mercantec.tech" },
+  { id: "git", name: "Git & GitHub", role: "client", url: "https://git.mercantec.tech" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];

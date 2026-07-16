@@ -311,6 +311,32 @@ export const projects: Project[] = [
     accentBg: "rgba(240, 80, 50, 0.10)",
     status: "live",
   },
+  {
+    id: "mqtt",
+    name: "MQTT Pensum",
+    tagline: "IoT-protokol, broker og live demo",
+    description:
+      "Dansk MQTT-pensum med teori om topics, QoS, LWT og arkitektur — plus indbygget Aedes-broker og live publish/subscribe i browseren. Klar til Arduino Opla og C# (MQTTnet) i undervisningen.",
+    features: [
+      "Interaktiv pensumside: protokol, IoT, QoS og arkitektur",
+      "Indbygget MQTT-broker (TCP + WebSocket) via Aedes",
+      "Live demo: publish/subscribe direkte i browseren",
+      "Arduino Opla-sketch og C#-eksempler til klasseværelset",
+    ],
+    techStack: [
+      { name: "Node.js", icon: "/tech/nodejs.svg" },
+      { name: "Express", icon: "/tech/express.svg" },
+      { name: "MQTT", icon: "/tech/mqtt.svg" },
+      { name: "Docker", icon: "/tech/docker.svg" },
+      { name: ".NET", icon: "/tech/dotnet.svg" },
+    ],
+    url: "https://mqtt.mercantec.tech",
+    github: "https://github.com/Mercantech/mqtt",
+    logo: "/projects/mqtt-logo.svg",
+    accentColor: "#00e6b8",
+    accentBg: "rgba(0, 230, 184, 0.12)",
+    status: "live",
+  },
 ];
 
 export interface EcosystemNode {
@@ -330,5 +356,6 @@ export const ecosystemNodes: EcosystemNode[] = [
   { id: "banko", name: "Banko", role: "client", url: "https://mercantech.github.io/Banko/" },
   { id: "h1powershell", name: "H1 PowerShell", role: "client", url: "https://powershell.mercantec.tech" },
   { id: "git", name: "Git & GitHub", role: "client", url: "https://git.mercantec.tech" },
+  { id: "mqtt", name: "MQTT Pensum", role: "client", url: "https://mqtt.mercantec.tech" },
   { id: "more", name: "Flere kommer", role: "future" },
 ];
